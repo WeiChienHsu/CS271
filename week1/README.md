@@ -1,6 +1,9 @@
 # Week 1: Computer Architecture Assembly Basics
 
--[Introduction to hardware, software and languages](#introduction-to-hardware-software-and-languages)
+[Introduction to hardware, software and languages](#introduction-to-hardware-software-and-languages)
+
+[How Computer Hardware Works](#how-computer-hardware-works)
+
 
 ***
 # Introduction to hardware software and languages
@@ -139,10 +142,100 @@ What does Moore's Law mean?
 
 ***
 
+# How Computer Hardware Works
+
+## Preliminaries
+Inside a computer, information is represented electrically. Smallest unit of information is a "switch".
+
+We Often represent 'off' as 0 and 'on' as 1, so a single switch represents "a binary digit" and is called a 'bit'.
+
+Different combination of switches represent different information. (A group of 8 bits is called a byte)
+
+### A Simple CISC Computer
+
+![CISCC](./images/CISCComputer.png)
+
+### Peripheral Devices (Exernal Devices) 
+- Store/Retrieve data(Non-volatile Storage)
+- Convert data between human-readable and machine readable froms.
 
 
+### I/O Unit: Hardware/Software functions
+- Communicate between CPU/Memory and peripheral devices.
+- Virtual Memory Interface
+- Virtual File System Interface
+- I/O
+
+### Main memory Unit: Cells with address
+- Store programs and data currently being used by the CPU(volatile storage)
+
+### CPU: Central Processing Unit
+- Execute machine instructions
+
+***
+
+## Components of CPU
+
+### Bus: Parallel "wires" for transferring a set of electrical signals simultaneously
+- Interanl: Transfer signals among CPU components
+- Control: Carries signals for memory and I/O operations
+- Address: Linkes to specific memory locations
+- Data: Carries data CPU <=> memory
+
+### Register 
+- Fast local memory inside the CPU
+
+### ALU 
+Arithmetic/Logic Unit
+
+### Microprogram
+Sequence of micro-instructions (implemented in hardware) required to execute a machine instruction
+
+### Micromemory
+The actual hardware circuits that implement the machine instructions as microprograms.
+
+***
+
+## CPU Registers 
+
+- Control Registers: dictates current state of the machine (Which signal goes where)
+
+- Status Registers: indicates status of operation(error, overflow, etc) (Used by Control Regiseter) 
+
+### Addressing Unit
+
+- MAR (Memory Address Register): Hold address of memory location currently referenced
+
+- MDR (Memory Data Register): Holds data being sent to or retrieved from the memory address in the MAR
+
+### Instructions
+
+- IP (Instruction Pointer) : Holds memory address of next instruction
+
+- IR (Instruction Register) : Holds current machine instruction
+
+- Starting Adress Generator (SAG)
+
+- Instruction Decoder
+
+### Arithmetic/Logic Unit (ALU)
+
+- Operand_1, Operand_2, Result: ALU registers (for calculations and comparisons)
+
+### Temporary Stroage
+
+- General: Fast temporary storage
 
 *** 
+## Cache
+An area of comparatively fast temporary stroage for information copied from slower storage.
+- Program instructions are moved from secondary storage to main memory, so they can be accessed more quickely.
+- Data is moved from main memory to a CPU register, so it can be accessed instantaneously.
+
+Caching takes place at several levels in a computer system.
+
+***
+
 ## Required Reading
 
 Textbook: Irvine
