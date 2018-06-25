@@ -229,6 +229,7 @@ The actual hardware circuits that implement the machine instructions as micropro
 *** 
 ## Cache
 An area of comparatively fast temporary stroage for information copied from slower storage.
+
 - Program instructions are moved from secondary storage to main memory, so they can be accessed more quickely.
 - Data is moved from main memory to a CPU register, so it can be accessed instantaneously.
 
@@ -236,6 +237,56 @@ Caching takes place at several levels in a computer system.
 
 ***
 
+## Instruction Execution Cycle
+
+- IP (Instruction Pointer)
+- IR (Instruction Register)
+
+1. Fetch next instruction (at address in IP) into IR.
+
+2. Increment IP to point to next instruction.
+
+3. Decode instruction in IR
+
+4. If instruction requires memory access,
+
+- Determine memory address.
+- Fetch operand from memoyr into a CPU register, or send operand from a CPU register to memory.
+
+5. Execute micro-program for instruction
+6. Go step 1 (unless the "halt" instruction has been executed)
+
+```
+## Discussion 
+In the instruction Execution Cyle, why is it important to change the instruction pointer in step2? Wouldn't it work just as well to change it after step 5?
+```
+***
+
+## Example CISC Instruction
+
+```asm
+ADD R1, mem1 ;Example assembly language instruction
+```
+
+1. Copy contents of R1 to ALU Operand_1
+2. Move address mem1 to MAR
+3. Singal memory fetch (get contents of memory address currently in MAR into MDR)
+4. Copy contents of MDR into ALU Operand_2
+5. Singal ALU addition
+6. Set Status Register and Copy contents of ALU Result to register R1
+
+***
+## Conclsion 
+
+Even in the simplest architectures
+- Bus Arbitration required
+- CPU scheduling required
+
+As architrctures become more complex
+- Multi-processor coordination required
+- Cache management required
+
+***
 ## Required Reading
 
 Textbook: Irvine
