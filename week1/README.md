@@ -352,6 +352,31 @@ ADD R1, mem1 ;Example assembly language instruction
 [Fetch Decode Execute Cycle](https://www.youtube.com/watch?v=jFDMZpkUWCw)
 ![fetch](./images/fetch.png)
 
+Life Cycle: IP(PC) -> MAR -> MDR -> CIR -> Control Unit
+
+### There are Three Instructions will be executed:
+
+```
+Load  [10] stored in memory [100]
+Add   [11] stored in memory [101]
+Store [12] stored in memory [102]
+
+What inside the address:
+[10] '2'
+[11] '3'
+[12] empty
+```
+
+### Executed Load [10]
+
+1. PC(IP) stores address of the next instruction to be fetched. :sun: (Memory address 100)
+
+
+
+### Executed Add [11]
+
+
+### Exected Store [12]
 
 
 ***
