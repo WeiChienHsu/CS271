@@ -6,6 +6,8 @@
 
 [Fetch Decode Execute Cycle](#fetch-decode-execute-cycle)
 
+[Introduction to Intel IA-32 Architecture](#introduction-to-intel-ia-32-architecture)
+
 
 ***
 # Introduction to hardware software and languages
@@ -279,7 +281,7 @@ Caching takes place at several levels in a computer system.
 ***
 
 ## VonNeuman Architecture
-Program is stored in memory, and is executed under the control of the operating system using an Instruction Execution Cycle
+computer architectures that store programs in memory, and execute them under the control of the instruction execution cycle.
 
 ***
 
@@ -349,7 +351,9 @@ ADD R1, mem1 ;Example assembly language instruction
 ***
 ## Fetch Decode Execute Cycle
 
-[Fetch Decode Execute Cycle](https://www.youtube.com/watch?v=jFDMZpkUWCw)
+[Fetch Decode Execute Cycle - Youtube video](https://www.youtube.com/watch?v=jFDMZpkUWCw)
+
+
 ![fetch](./images/fetch.png)
 
 Life Cycle: IP(PC) -> MAR -> MDR -> CIR -> Control Unit
@@ -429,7 +433,38 @@ As architrctures become more complex
 - Multi-processor coordination required
 - Cache management required
 
+## Execution Time Calculate
+
+```
+Level 5 -    Level 4 -  Level 3   -   Level 2 -       Level 1 -     Level 0
+High Level  Assembly    Operating   Instruction Set  Micro          Digit
+Language    Language    System      Architecture     Architecture   Logic
+```
+Consider the virtual machine levels (except 0 and 5), an interpreter accepts an instruction from the level above, converts the instruction to its own language, and passes the resulting instructions to the level below. 
+
+Note that Level-0 has no interpreter; the instructions from the Micro-architecture level are sent directly to the
+hardware.
+
+Suppose that the interpreters at each level (levels 1 - 4) generate n instructions in order to represent one instruction from the level above. Suppose also that each Level-0 instruction executes in c nanoseconds.
+
+### How long does it take to execute a Level-3 instruction?
+cn^2 ns. 
+
+Going from level-3 to level-2 creates n instructions. For each of those n instructions, going from level-2 to level-1 creates n instructions, so there will be n2 micro-instructions, each of which requires c nano-seconds to execute.
+
+### How long does it take to execute a Level-5 instruction? _cn4
+cn^4 ns.
+
+
 ***
+# Introduction to Intel IA-32 Architecture
+
+
+
+
+
+***
+
 ## Required Reading
 
 Textbook: Irvine
