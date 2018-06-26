@@ -4,6 +4,8 @@
 
 [How Computer Hardware Works](#how-computer-hardware-works)
 
+[Fetch Decode Execute Cycle](#fetch-decode-execute-cycle)
+
 
 ***
 # Introduction to hardware software and languages
@@ -158,6 +160,7 @@ Different combination of switches represent different information. (A group of 8
 ### Peripheral Devices (Exernal Devices) 
 - Store/Retrieve data(Non-volatile Storage)
 - Convert data between human-readable and machine readable froms.
+- Keyborad
 
 
 ### I/O Unit: Hardware/Software functions
@@ -165,30 +168,51 @@ Different combination of switches represent different information. (A group of 8
 - Virtual Memory Interface
 - Virtual File System Interface
 - I/O
+- Partly on software and hardware
 
 ### Main memory Unit: Cells with address
-- Store programs and data currently being used by the CPU(volatile storage)
 
-### CPU: Central Processing Unit
+所有程序需要使用的時候，都會經由Main memory
+
+- Store programs and data currently being used by the CPU (volatile storage - If electrical power is inturrcted) -> Secondry memory is unvolatile
+- Accessable for the CPU
+- Operating System
+- Device Driver
+- System Stack
+- System Heap
+- User Programs
+- User Data
+
+### CPU: Central Processing Unit **
 - Execute machine instructions
 
 ***
 
-## Components of CPU
+## Components of CPU 
 
 ### Bus: Parallel "wires" for transferring a set of electrical signals simultaneously
-- Interanl: Transfer signals among CPU components
-- Control: Carries signals for memory and I/O operations
-- Address: Linkes to specific memory locations
-- Data: Carries data CPU <=> memory
+
+![Bus](./images/001_Bus.png)
+
+信號在CPU內，透過Bus可以在CPU Component之間傳遞。
+
+- Interanl Bus: Transfer signals among CPU components
+
+- Control: Carries Bus signals for memory and I/O operations
+- Address Bus: Linkes to specific memory locations
+- Data Bus: Carries data CPU <=> memory
 
 ### Register 
+- Directly connected with the Internal Bus
 - Fast local memory inside the CPU
+- Have General Registers and several specificed purposes registers.
 
 ### ALU 
-Arithmetic/Logic Unit
+
+Arithmetic/Logic Unit: Calculation and Comparison take place
 
 ### Microprogram
+
 Sequence of micro-instructions (implemented in hardware) required to execute a machine instruction
 
 ### Micromemory
@@ -198,38 +222,55 @@ The actual hardware circuits that implement the machine instructions as micropro
 
 ## CPU Registers 
 
-- Control Registers: dictates current state of the machine (Which signal goes where)
+### Control Register
+- Control Registers: dictates current state of the machine (Which signal goes where) 
+- Control and Set by the System Clock
+- 決定Signal要去哪
 
-- Status Registers: indicates status of operation(error, overflow, etc) (Used by Control Regiseter) 
+### Status Register
+- Status Registers: indicates status of operation(error, overflow, etc). Used by Control Regiseter. To determine whether jump or don't jump to other instruction depends on the equal bit. 
+- 決定 Control Register 是否要執行下一步，或是有無錯誤的操作和指令。
 
-### Addressing Unit
 
-- MAR (Memory Address Register): Hold address of memory location currently referenced
+### Addressing Unit (Important)
 
-- MDR (Memory Data Register): Holds data being sent to or retrieved from the memory address in the MAR
+Data Transfer between Main Memory and CPU
+
+#### MAR (Memory Address Register)
+- MAR (Memory Address Register): Hold address of memory location currently referenced and connected to that referenced address with the address bus
+
+#### MDR (Memory Data Register)
+- MDR (Memory Data Register): Holds data being sent to or retrieved from the memory address in the MAR. Hold the data that will be stroed or wait to receive the data that has been stroed
+
 
 ### Instructions
-
-- IP (Instruction Pointer) : Holds memory address of next instruction
+- IP (Instruction Pointer) : Holds memory address of next instruction to be copied from Main Memory into IR. [program counter (PC)]
 
 - IR (Instruction Register) : Holds current machine instruction
 
-- Starting Adress Generator (SAG)
+- Instruction Decoder: IP and IR transfer to the instuction decoder to determine which instruction be executed
 
-- Instruction Decoder
+- Starting Adress Generator (SAG) : Where in micro memory that corrsponsding micro program will implement, the micro IP set up the next instuction in Control Register
+
 
 ### Arithmetic/Logic Unit (ALU)
 
 - Operand_1, Operand_2, Result: ALU registers (for calculations and comparisons)
 
-### Temporary Stroage
+An accumulator is a register for short-term, intermediate storage of arithmetic and logic data in a computer's CPU (central processing unit). The term "accumulator" is rarely used in reference to contemporary CPUs, having been replaced around the turn of the millennium by the term "register."
 
-- General: Fast temporary storage
+
+### General Register
+
+- General: Fast temporary storage for the data
 
 *** 
-## Cache
+
+## Cache (Faster memory)
 An area of comparatively fast temporary stroage for information copied from slower storage.
 
+- Main memory is the Cache of Peripheral Device(Secondry Storge)
+- General Register is the Cache of Main Memory.
 - Program instructions are moved from secondary storage to main memory, so they can be accessed more quickely.
 - Data is moved from main memory to a CPU register, so it can be accessed instantaneously.
 
@@ -237,7 +278,36 @@ Caching takes place at several levels in a computer system.
 
 ***
 
+## VonNeuman Architecture
+Program is stored in memory, and is executed under the control of the operating system using an Instruction Execution Cycle
+
+***
+
+[Program Counter and Instruction Register](https://stackoverflow.com/questions/15739489/program-counter-and-instruction-register)
+
+The program counter (PC) holds the address of the next instruction to be executed.
+
+The instruction register (IR) holds the encoded instruction. 
+
+Upon fetching the instruction, the program counter is incremented by one "address value" (to the location of the next instruction). The instruction is then decoded and executed appropriately.The reason why you need both is because if you only had a program counter and used it for both purposes you would get the following troublesome system:
+
+```
+[Beginning of program execution]
+
+PC contains 0x00000000 (say this is start address of program in memory)
+Encoded instruction is fetched from the memory and placed into PC.
+The instruction is decoded and executed.
+Now it is time to move onto the next instruction so we go back to the PC to see what the address of the next instruction is. However, we have a problem because PC's previous address was removed so we have no idea where the next instruction is.
+```
+
+Therefore, we need another register to hold the actual instruction fetched from memory. Once we fetch that memory, we increase PC so that we know where to fetch the next instruction.
+
+P.S. the width of the registers varies depending on the architecture's word size. For example, for a 32-bit processor, the word size is 32-bits. Therefore, the registers on the CPU would be 32 bits. Instruction registers are no different in dimensions. The difference is in the behavior and interpretation. Instructions are encoded in various forms, however, they still occupy a 32-bit register. 
+
+***
 ## Instruction Execution Cycle
+
+
 
 - IP (Instruction Pointer)
 - IR (Instruction Register)
@@ -274,6 +344,15 @@ ADD R1, mem1 ;Example assembly language instruction
 4. Copy contents of MDR into ALU Operand_2
 5. Singal ALU addition
 6. Set Status Register and Copy contents of ALU Result to register R1
+
+
+***
+## Fetch Decode Execute Cycle
+
+[Fetch Decode Execute Cycle](https://www.youtube.com/watch?v=jFDMZpkUWCw)
+![fetch](./images/fetch.png)
+
+
 
 ***
 ## Conclsion 
