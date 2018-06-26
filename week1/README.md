@@ -367,16 +367,55 @@ What inside the address:
 [12] empty
 ```
 
-### Executed Load [10]
+### Executed Load [10] 
 
-1. PC(IP) stores address of the next instruction to be fetched. :sun: (Memory address 100)
+1. PC(IP) stores address of the next instruction to be fetched. || (Stored Memory address 100)
 
+2. Before we can fetch the instruction from RAM, that memory address [100] can be loaded into the MAR. || (Stored Memory Address 100)
 
+3. The contents of the memory address [100] should be loaded into the MDR. || (Stored Instruction Load [10])
+
+4. Now we're fetching first instruction. The Instruction need to be placed inside the current IR. || (Stored Instruction Load [10])
+
+5. The PC(IP) will increment by one. (Always pointing to the memory address of the next instruction to be fetched before we've executed the current instruction) ||(Stored Memory address 101)
+
+6. Decode the instruction. Since the instruction is "Load [10]", we need to fetch the value from memory address [10].
+
+7. The address of memory [10] now goes into MAR, and we take the content placed it into MDR overwriting its previous content. || (MAR stored the address of 10 and MDR stored the content of address 10 which is 2)
+
+8. Content of address 2 was placed into the accumulator. [First Instruction is executed]
 
 ### Executed Add [11]
 
+9. Now, the PC(IP) has already pointed to the memory address [101] of next instruction "Add [11]" || (Read the address stored in PC)
 
+8. Copied the address from PC(IP) to MAR and take the content of that memory address [101] and put the instruction into MDR. || (Stroed the address of [101] in MAR and the instruction of "Add [11]" in MDR)
+
+9. Moved instuction into current IR and decode it. (Stored the instruction into Current IR)
+
+10. Increment the PC(IR). || (PC point to address [102])
+
+11. Passed the instruciton stored in IR into Control Unit. (Pass instruction into Control Unit from IR)
+
+12. Now, Add instruciton is passed into ALU by control bus. Contents of the accumulator are moved to another placed and ready to be worked with.
+
+13. We need to fetch the content of address [11] since the ALU need to process the instruciotn. Thus, we stored the address 11 into MAR and get the contnets 3 to store into MDR. (Stroed address of [11] into MAR and contents of [11] into MDR)
+
+14. Then, 3 is placed into the accumulator from MDR.
+
+15. ALU will add these two number we had and placed the result back in accumularot as 5. || (ALU add the number passed from MDR and place back to Accumulator)
+ 
 ### Exected Store [12]
+
+16.  Now, the PC(IP) has already pointed to the memory address [102] of next instruction "Store [12]" || (Read the address stored in PC)
+
+17. MAR get copied of address [102] and put the instruciton "Stroe [12]" into MDR.
+
+18. Last Instruction be moved into Current IR and PC(IR) increment one. (It might hace terminated instruciton in address [103])
+
+19. Control Unit get the instruciton from Current IR and put the memory address of [12] into MAR as well as the contents of accumulator into MDR. 
+
+20. Finally, the data in the MDR will be stored into the address in MAR wich is address 12.
 
 
 ***
