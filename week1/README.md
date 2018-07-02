@@ -459,8 +459,54 @@ cn^4 ns.
 ***
 # Introduction to Intel IA-32 Architecture
 
+## Two modes of operation:
+- Protected
+- Real-address
 
+## Two processors in one
+- integer unit
+- floating-point unit
+- Two processors can work in parallel(co-processors)
 
+## Specific hardware implementations
+- Registers
+- Memory addressing scheme
+- pecific instruction set and microprograms
+
+### Metrics -> Ki = 2^10, Mi = 2^20, Gi = 2^30
+
+### Bytes(B) and bit(b)
+1 Mib = 128 KiB
+
+Byte is the smallest unit of data that can be manipulated directly in the IA-32 architecture. Operating system and instruction decoder determine how byte codes are interpreted.
+
+- integer
+- character
+- floating-point
+- instruction
+- address
+- status bits
+
+### Meory 
+
+### 32-bit machine
+- Registers
+- Buses
+- ALU
+
+### 32-bit general-purpose registers
+
+EAX / EBX / ECX / EDX
+
+- EAX and EDX are automatically used by integer multiplication and division instruction
+- ECX is automatically used as a counter for some looping instructions
+- ESP is used for regerencing the system stack
+
+Some 32-bit registers have 8-bit and 16-bit "sub-registers"
+
+- If you change a sub-register, the value in the entire register is changed.
+
+### 
 
 
 ***
