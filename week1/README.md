@@ -8,6 +8,8 @@
 
 [Introduction to Intel IA-32 Architecture](#introduction-to-intel-ia-32-architecture)
 
+[MASM instruction](#masm-instruction)
+
 
 ***
 # Introduction to hardware software and languages
@@ -506,7 +508,180 @@ Some 32-bit registers have 8-bit and 16-bit "sub-registers"
 
 - If you change a sub-register, the value in the entire register is changed.
 
-### 
+***
+## Week Summary
+
+1. The ASCII codes for alphabetic letters are smaller than for decimal digits.
+- False
+
+2. A signed integer stores the sign in the least significant bit (LSB).
+- False
+
+3. The three most basic operators in Boolean algebra are AND, OR, and NOT.
+- True
+
+4. Which of the following best describes the relationship between assembly language instructions and machine language instructions?
+- one to one 
+
+6. What is the largest signed integer that may be stored in 32 bits?
+- 2^31 -1
+
+7. How many bits are used by Unicode characters in MS-Windows?
+- 16
+
+9. The two's complement of an integer is formed by doing which of the following?
+- reversing (inverting) the bits and adding 1 
+
+10. What is the largest unsigned integer that may be stored in 24 bits?
+-  16,777,215 
+
+11. If an integer's sign bit is 1, the integer is positive.
+- False
+
+12. Which list contains the correct hexadecimal translation (in order) of the following unsigned decimal integers? 33, 95, 257
+- 21, 5F, 101 
+
+13.  Device drivers nearly always contain some code written in
+- assembly language 
+
+14. Which of the following is the binary translation of signed decimal -33 ?
+- 11011111 
+
+15. A signed byte can be equal to +127.
+- True
+
+
+16. What is the name of the lowest 8 bits of the EDX register?
+- DL
+
+17. How much memory can be addressed in Real-address mode?
+- 1MB
+
+18. List the three primary steps of the instruction execution cycle, in sequential order.
+Correct!
+
+- Fetch, Decode, Execute
+
+19. Which internal bus uses binary signals to synchronize actions of all devices attached to the system bus?
+- Control Bus
+
+20. The four parts of a CPU are:
+-  clock, registers, control unit, arithmetic logic unit 
+
+21. What is the name of the time delay in a CPU caused by differences between the speed of the CPU, the system bus, and memory circuits?
+- Wait State
+
+22. Within the CPU, all calculations and logic operations take place inside the ___________ .
+
+- ALU
+
+A program that combines object files into an executable program is called a _________.
+
+- Linker
+
+
+
+23. Which register is known as a loop counter?
+
+-  ECX 
+
+24. During which phase of the instruction execution cycle is the program counter incremented?
+
+- Fetch
+
+25. How much memory can be addressed in Protected mode?
+- 4GB
+
+26. Which of the following defines a text macro named MESSAGE that contains this string data? "I'm good at this!",0
+- MESSAGE TEXTEQU <"I'm good at this!",0>
+
+27. Which of the following are valid data definition statements that create an array of unsigned bytes containing decimal 10, 20, and 30, named myArray?
+-   myArray BYTE 10, 20, 30
+
+28. The following are both valid data definition statements:  
+```asl
+List1 BYTE 10,20
+       BYTE 30,40
+```
+
+- True
+
+29. An identifier may begin with a digit.
+- False(with letter)
+
+
+30. In the following data definition, assume that List2 begins at offset 2000h. What is the offset of the third value (5)?
+```
+List2 WORD 3,4,5,6,7
+```
+- 2004h
+
+31. The EQU directive permits a constant to be redefined at any point in a program.
+- False
+
+32. Which utility program reads an assembly language source file and produces an object file?
+- assemblr
+
+33. In the AddSub program in Section 3.2, the exit statement calls which predefined MS-Windows function to halt the program?
+- ExitProcess
+
+34. Which directive is used when defining 64-bit IEEE long reals?
+- REAL8
+
+35. The following is a valid data definition statement:   
+```
+str1 \
+BYTE "This string is quite long!",0
+```
+- True
+
+36. A word (on x86 systems) is 16 bits
+- True
+
+37. If you wanted to find out whether an integer contained an even number of 1 bits, which status flag would be useful?
+
+- Parity
+
+38. High-speed memory that reduces the frequency of access by the CPU to conventional memory is called?
+
+- cache memory
+
+39. The three types of buses connected to the CPU are:
+- data, address, control
+
+
+40. Which letter choice shows the memory byte order, from low to high address, of the following data definition?
+
+- 78h,56h,34h,12h
+
+
+41. Select a data definition statement that creates an array of 500 signed doublewords named myList and initializes each array element to the value -1. 
+
+- myList SDWORD 500 DUP (-1)
+
+42. The byte-ordering scheme used by computers to store large integers in memory with the high-order byte at the lowest address is called:
+
+- Big Endian
+
+43. Which directive identifies the part of a program containing instructions?
+- .code
+
+***
+
+# MASN instruction
+- Move data
+- Arithmetic
+- Compare two values
+- Conditional / Unconditional Branch
+- Call procedure, return
+- Loop control
+- I/O (input/output)
+
+## MASM Directives
+Tell the assembler how to interpret the code
+- Mark beginning of program segments: .data / .code
+- Mark special labels: main proc / varName DWORD
+
 
 
 ***
