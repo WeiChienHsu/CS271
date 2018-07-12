@@ -677,11 +677,64 @@ BYTE "This string is quite long!",0
 - Loop control
 - I/O (input/output)
 
-## MASM Directives
+# Directive
 Tell the assembler how to interpret the code
 - Mark beginning of program segments: .data / .code
 - Mark special labels: main proc / varName DWORD
 
+
+## TITLE Directives
+
+- you can put anything you want
+- ;identification block
+
+## INCLUDE driectives
+- Copies a file of definition s and procedures into the source code
+- use Irvine32.inc for now
+
+## .data directive 
+- marks beginning of data segment
+- variable declarations go here
+
+## .code directive
+- marks end of data segment and beginning of code segment
+
+### main procedure
+Define here in .code directive
+- other procedures defined here optionally
+- main must have an exit instruction
+- all procedures require PROC and ENDP directives
+
+## END directive
+- Tell operting system where to begin execution
+
+# MASM data types syntax
+
+| Type | Used for                         |
+|:----:|:--------------------------------:|
+| BYTE | Character, string, 1-byte integer|
+| WORD | 2-byte integer, address          |
+|DWORD | 4-byte unsigned integer, address |
+|FWORD | 6-byte integer, address          |
+|QWORD | 8-byte integer, address          |
+|TBYTE | 10-byte integer, address          |
+|REAL4 | 4-byte floating - point |
+|REAL8 |8-byte floating - point |
+|REAL10|10-byte floating - point |
+
+# MASM Data definition syntax
+
+- label is the variable name
+- data_type 
+- at least one initializer is required (Value to be assigned later -> ?)
+
+```asm
+size  DWORD 100 ;class size
+celsius WORD -10 ; current Celsius
+
+```
+- Each name is a constant, the system substituties the memory address for each occurrence of a name
+- The contects of a memory location may be variable.
 
 
 ***
