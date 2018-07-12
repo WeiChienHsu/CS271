@@ -736,6 +736,43 @@ celsius WORD -10 ; current Celsius
 - Each name is a constant, the system substituties the memory address for each occurrence of a name
 - The contects of a memory location may be variable.
 
+# MASM Instruction syntax
+
+Each instruction line have 4 fields:
+- Label
+- Opcode
+- Operands
+- Comment
+
+### Opcode (Specifies what to do)
+- Mnemonic(eg. ADD, MOV, CALL, etc)
+
+### Operands
+- Zero, one or two Operands(specify the opcode's target)
+- Different number of operands for different opcodes
+
+```
+opcode
+opcode destionation
+opcode destionation, source
+```
+
+```asm
+EAX 9
+EBX 16
+add eax ebx
+
+-> Value 25 will be override on EAX.
+```
+
+### Addressing modes
+Permitted for the operands associated with each code.
+
+- Immediate: Constant, Literal, Absolute address
+- Register : Content of register
+- Direct   : Contents of referenced memory address
+- Offset   : Memory address; may be calculated
+
 
 ***
 
