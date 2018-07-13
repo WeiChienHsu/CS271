@@ -776,15 +776,183 @@ Permitted for the operands associated with each code.
 
 ## Example
 
-- Move String named intro_1 from memory Offset to edx memory address
+- Move  String named intro_1 from memory Offset to edx Register (OFFSET - Take the address of variable)
 
-```
+```asm
 	mov		edx, OFFSET intro_1
+	call	WriteString
+	call	CrLf 
+```
+- We want to print an Integer, need to put that value of integer in the "EAX" Reguster
+
+```asm
+; Report Result
+	mov		edx, OFFSET result_1
+	call	WriteString
+	mov		eax, dogAge
+	call	WriteInt
+	mov		edx, OFFSET result_2
 	call	WriteString
 	call	CrLf
 ```
 
+- Read Strgin: Put the memory address of where this String might be stored in EDX register
+- EXC to limit the String max characters number 
 
+```asm
+; Get user name
+	mov		edx, OFFSET prompt_1
+	call	WriteString
+	mov		edx, OFFSET userName
+	mov		ecx, 32
+	call	ReadString
+```
+- Calucation : Go to memory to pick up the number we need to use.
+- Default of mul: Used the number in eax to multupled by number in ebx
+
+```
+; Get user age
+	mov		edx, OFFSET prompt_2
+	call	WriteString
+	call	READInt
+	mov		userAge, eax
+
+; Calculae user "Dog Years"
+	mov		eax, userAge
+	mov		ebx, DOG_FACTOR
+	mul		ebx
+	mov		dogAge, eax
+```
+
+## Result - Dog Age
+
+```asm
+
+TITLE Dog Years     (Project00.asm)
+
+
+
+; Author: Kevin
+; Course / Project ID : Demo #0                Date: xx/xx/xx
+; Description:  This program will introduce the programmer, get the user's name and age,
+;	calculate the user's "dog age", and report the result.
+
+
+INCLUDE Irvine32.inc
+
+DOG_FACTOR = 7
+
+.data
+
+userName	BYTE	33 DUP(0)	;string to be entered by user
+
+userAge		DWORD	?			;integer to be entered by user
+
+intro_1		BYTE	"Hi, my name is Lassie, and I'm here to tell you your age in dog years !", 0
+
+prompt_1	BYTE	"What's your name? ", 0
+
+intro_2		BYTE	"Nice to meet you, ",0
+
+prompt_2	BYTE	"How old are you? ", 0
+
+dogAge		DWORD	?
+
+result_1	BYTE	"Wow ... that's ", 0
+
+result_2	BYTE	" in dog years !", 0
+
+goodBye		BYTE	"Good-bye, ", 0
+
+	
+
+.code
+
+main PROC
+
+
+
+; Introduce programmer
+	mov		edx, OFFSET intro_1
+	call	WriteString
+	call	CrLf
+
+; Get user name
+	mov		edx, OFFSET prompt_1
+	call	WriteString
+	mov		edx, OFFSET userName
+	mov		ecx, 32
+	call	ReadString
+
+; Get user age
+	mov		edx, OFFSET prompt_2
+	call	WriteString
+	call	READInt
+	mov		userAge, eax
+
+; Calculae user "Dog Years"
+	mov		eax, userAge
+	mov		ebx, DOG_FACTOR
+	mul		ebx
+	mov		dogAge, eax
+
+; Report Result
+	mov		edx, OFFSET result_1
+	call	WriteString
+	mov		eax, dogAge
+	call	WriteInt
+	mov		edx, OFFSET result_2
+	call	WriteString
+	call	CrLf
+
+; Say Gooebye
+	mov		edx, OFFSET goodBye
+	call	WriteString 
+	mov		edx, OFFSET userName
+	call	WriteString
+	call	CrLf
+
+
+	exit	; exit to operating system
+
+main ENDP
+
+
+
+END main
+```
+
+***
+
+## Implied Operands
+
+### Mul
+
+mul implied operand must be in EAX
+mul op2 ; result is in EDX:EAX (If the mul caused overflow)
+
+
+Example:
+```
+mov eax, 10
+mov ebx, 12
+mul ebx			; result is in eax (120), with possible overflow in edx (now edx is changed)
+```
+
+### Div
+
+div implied operand is in EDX:EAX
+so extend EAX into EDX before divistion
+div op2 ; quptient is in EAX, reminder is in EDX
+
+Example:
+```
+mov eax, 100
+cdq 					;extend the sign into edx
+mov ebx, 9
+div ebx				; quotient is in eax (11) ; remainder is in edx 1
+
+```
 
 ***
 
