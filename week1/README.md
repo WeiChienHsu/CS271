@@ -461,9 +461,10 @@ cn^4 ns.
 ***
 # Introduction to Intel IA-32 Architecture
 
+
 ## Two modes of operation:
-- Protected
-- Real-address
+- Protected: Registers would not be accessed to users
+- Real-address: User program could do anything
 
 ## Two processors in one
 - integer unit
@@ -953,6 +954,86 @@ mov ebx, 9
 div ebx				; quotient is in eax (11) ; remainder is in edx 1
 
 ```
+
+## MOV Statement
+
+Permitted for the operands associated with each code.
+
+- Immediate: Constant, Literal, Absolute address
+- Register : Content of register
+- Direct   : Contents of referenced memory address
+- Offset   : Memory address; may be calculated
+
+
+
+|Syntax						| Examples 				  |
+|:---------------:|:-----------------:|
+|MOV mem,  accum  | mov total, eax    |
+|MOV accum, mem		| mov responese, al |
+|MOV mem, imm			| mov number, 7			|
+|MOV reg, imm			| mov ecx, 256			|
+|MOV reg, reg			| mov edx, ecx			|
+|MOV mem, reg			| mov num1, ecx			|
+|MOV reg, mem			| mov ebx,	pointer |
+
+
+## Error Behaviors
+
+```
+.data
+bVal		BYTE		100
+bVal2		BYTE		?
+wVal		WORD		2
+dVal		DWORD 	5
+
+
+.code
+mov ds 45 			immediate move to DS not permitted
+mov esi, wVal		size mismatch
+mov eip, dVal		EIP cannot be the desination 
+mov 25, bVal		immediate value cannot be destination
+mov bVal2, bVal	memory to memory move not permitted, need to move into register to copy memory location
+
+```
+
+## Divided
+
+If we do not place 0 into edx or use "cdq" since we place 0000000 0000000 0000000 0111111 into EAX as firstNum, by our usage of the DIV instruction tries to divide EDX:EAX by EBX. Since we didn't initialize EDX to any specific number, it still contains junk data from previous programs that used the register.
+
+The CDQ instruciton extends EAX so that EDX:EAX contains
+00000000 00000000 00000000 00000000 00000000 00000000 00000000 01111111 
+
+```
+    mov   eax, firstNum
+    mov   ebx, secondNum	
+    mov   edx, 0
+    div   ebx					; divides eax by ebx, edx becomes remainder.
+    mov   quotResult, eax		
+    mov   remResult, edx
+```
+
+## Library Procedures - IRVINE
+Clrscr - Clear the screen
+
+Crlf - New Line
+
+ReadInt - Reads an integer from keyboard, terminated by the Enter Key (Value entered is in EAX)
+
+ReadString - Reads a string from keyborad, terminated by the Enter Key.
+- Precondition: OFFSET of memory destination in EDX, SIZE of memory destinaiton in ECX
+- Postconditions: String entered is in memory , Length of string entered is in EAX
+
+WriteInt, WriteDex - Writes an integer to the screen
+- Precondition: value in EAX
+- Postconditions: value displayed
+
+WriteString - Writes a null-terminated string to the screen
+- Precondition: OFFSET of memory location in EDX
+- Postconditions: string displayed
+
+***
+
+
 
 ***
 
