@@ -774,6 +774,18 @@ Permitted for the operands associated with each code.
 - Offset   : Memory address; may be calculated
 
 
+## Example
+
+- Move String named intro_1 from memory Offset to edx memory address
+
+```
+	mov		edx, OFFSET intro_1
+	call	WriteString
+	call	CrLf
+```
+
+
+
 ***
 
 ## Required Reading
