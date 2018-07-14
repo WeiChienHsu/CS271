@@ -258,5 +258,178 @@ sumLoop:  ; add integers from 10 to 1
 ; Print result
     call WriteDec
 ```
+***
+# Constants
+
+### name = expression
+- Name is called a symobic constant
+- expression is a 32-bit integer
+- Cannot be redefined in the same program
+
+```
+COUNT = 500
+...
+mov exc, COUNT
+```
+
+### EQU Directive 
+Define a symbol as numeric or text expression. (Note <...>)
+Cannot be redefined in the same program
+
+```
+PI EQU <3.1416>
+PRESS_KEY EQU <"Press any key to contimue ... " , 0 >
+
+.data
+
+prompt BYTE PRESS_KEY
+```
+
+### Calculating the size of a string
+Current location in Data segment is $
+Subtract address of string - difference is the number of bytes
+
+```
+.data
+rules_1 BYTE    "Entehr the lower limit: ", 0
+SIZE_1  = ($  - rules_1)  ; constant length of rules_1 (24)
+```
+
+## Boolean constants
+
+Doesn't have a Boolean data type, 0 for FALSE 1 for TRUE.
+
+## Data Validation
+
+Try to verify that the user's input can be handled by the program.
+
+Try to keep the program from crashing on invalud input
+
+Try to infor user if there is an input data error.
+
+- Simple range checking
+- One form of interactive data validation
+
+```
+repeat
+  valid = true
+  get value
+  if value is not in range
+    valid = false
+    give error message
+  until valid
+
+```
 
 ***
+
+# Data Representation
+
+## Internal Representaion
+Just like everything eles in a computer, the representation of data is implemented electrically.
+
+- switches set to off or on
+- with open/closed gates.
+
+There are two states for each gate
+
+The binary number system usses two digits
+
+In order to simplify discussion, we use the standard external representation to transcribe the computer's internal representation 
+
+- off is written as digit 0
+- on is written as digit 1
+
+## External Representation
+Binary Number System
+- has 2 digits: 0 and 1 (binary digit)
+
+### In theory 
+can uniquely represent any integer value. A binary representation is just another way of writing a number that we are accustomed to seeing in decimal form.
+
+### In practice
+inside the computer representation is finite.
+
+***
+
+# Representing Negative integers
+
+Separate the codes so that half of them represent negative numbers. (Note that exactly half of the codes have 1 in the "leftmost" bit.)
+
+## Binary form of negative
+
+-13 in 16-bit twos-complement
+
+```
+| -13 | = 13 =    0000 0000 0000 1101
+one complement is 1111 1111 1111 0010
+add 1 to get      1111 1111 1111 0011 = -13
+```
+
+## Signed numbers using 4-bit tows-complement form
+
+| Number | Two-complement digits |
+|:------:|:---------------------:|
+|-8 | 1000 |
+|-7 | 1001 |
+|-6 | 1010 |
+|-5 | 1011 |
+|-4 | 1100 |
+|-3 | 1101 |
+|-2 | 1110 |
+|-1 | 1111 |
+|0  | 0000 |
+|1  | 0001 |
+|2  | 0010 |
+|3  | 0011 |
+|4  | 0100 |
+|5  | 0101 |
+|6  | 0110 |
+|7  | 0111 |
+
+The 2^n possible codes give
+
+- Zero (All bits are zero)
+- (2^n-1  - 1) psitive numbers
+- (2^n-1) negative number
+
+Note there is one 'weird' number -> 
+0111 111 + 1 = 1000 0000 127 + 1 = -128
+
+## Signed or Unsigned
+A 16-bit representation could be used for signed or unsigned numbers
+- 16-bit unsigned range is 0 - 65535
+- 16-bit signed range is -32768 ... + 32768
+
+Programs tell the computer which form is being used.
+
+## Negative hex (signed integers)
+Recall that a 16-bit signed integer is negatie if the leftmost bit is 1.
+
+- 0x7a3e is positove (Looking if it is smaller than 7)
+- 0x8a3e is negative
+- 0xFFFF is negative
+
+
+## Character and control codes
+
+ASCII 256 codes (1-byte)
+- 'A' ... 'Z' are codes 65 - 90
+- '0' ... '9' are codes 48 - 57
+
+Unicode 65,536 codes (2-byte)
+
+Device controllers translate codes (device dependent)
+
+
+
+
+***
+
+# Debuging MASM
+
+Set Breakpoints by clicking in the left margin
+
+Debug -> Start Debugging
+
+Debug, Window, Registers -> To view register contents, Register contents are shown in window
