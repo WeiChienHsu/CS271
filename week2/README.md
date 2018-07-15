@@ -423,6 +423,190 @@ Device controllers translate codes (device dependent)
 
 
 
+***
+
+# Practice
+
+#### After executing the following instruction sequence, what is the value of AL, in binary:
+```
+mov al,00111100b
+or  al,82h
+```
+
+1011 1110
+
+#### After executing the following instruction sequence, what is the value of AL, in binary:
+```
+mov al,4Bh
+and al,6Ch
+```
+
+01001000
+
+#### Which of the following selections contain instructions that jump to label L4 only if bits 1, 2, and 3 are all set in the DL register?
+
+```
+and dl,0Eh
+cmp dl,0Eh
+je  L4
+```
+
+
+#### After the following instruction sequence, show the values of the Carry  
+```
+mov al,6
+cmp al,5
+```
+
+0, Zero  0 , and Sign 0 flags
+
+#### Suppose EAX, EBX, and ECX contained three unsigned integers. Which of the following code excerpts would display the largest of the three integers?
+
+```
+    cmp eax,ebx
+    jae L1
+    mov eax,ebx
+L1: cmp eax,ecx
+    jae L2
+    mov eax,ecx
+L2: call WriteInt
+```
+
+#### After executing the following instruction sequence, what is the value of AL, in binary:
+```
+mov al,94h
+xor al,37h
+```
+10100011
+
+#### After the following instruction sequence, show the values of the Carry  
+
+```
+mov al,00110011b
+test al,2
+```
+
+0, Zero  0 , and Sign 0 flags
+
+#### After executing the following instruction sequence, what is the value of AL, in binary:
+```
+mov al,11001111b
+and al,00101011b
+```
+
+00001011
+
+#### After executing the following instruction sequence, what is the value of AL, in hexadecimal
+```
+mov al,9Ch
+not al
+```
+
+63h
+
+#### After the following instruction sequence, show the values of the 
+```
+mov al,5
+cmp al,7
+```
+
+Carry  1, Zero  0 , and Sign 1 flags
+
+#### Where is the result of the following operation stored?
+```
+MUL EBX
+```
+EDX:EAX
+
+#### In what register will the quotient of the following instruction be found?
+```
+DIV EBX
+```
+
+eax
+
+#### Unlike the MUL instruction, IMUL preserves the sign of the product.
+
+TRUE
+
+#### Identify which of the following are correct formats for the DIV instruction. (Check all that apply)
+
+- DIV mem8
+- DIV mem32
+- DIV mem16
+- DIV reg
+
+#### In what register will the remainder of the following instruction be found?
+```
+DIV EBX
+```
+
+edx
+
+#### What is the value of the Carry flag after the following instructions?
+```
+mov al,5h
+mov bl,10h
+mul bl
+```
+
+0.000
+
+#### Identify which of the following are correct formats for the IMUL instruction. (Check all that apply)
+- IMUL reg16,reg/mem16
+- IMUL reg16,imm8
+- IMUL reg32,reg/mem32,imm8
+- IMUL reg16,reg/mem16,imm16
+- IMUL reg32,imm8
+- IMUL reg32,imm32
+- IMUL reg32,reg/mem32
+- IMUL reg16,reg/mem16,imm8
+- IMUL reg16,imm16
+- IMUL reg32,reg/mem32,imm32
+
+
+#### Identify which of the following are allowed formats for the MUL instruction. (Check all that apply)
+
+- MUL mem16
+- MUL mem32
+- MUL reg
+- MUL mem8
+
+#### The Irvine32 library call GetMseconds returns
+
+number of system milliseconds that have elapsed since midnight 
+
+#### Even in older x86 processors, there was an insignificant difference in performance between multiplication by bit shifting versus multiplication using the MUL and IMUL instructions.
+
+False
+
+
+#### Fill in
+Identify the sizes of the sign  1 , exponent  8 , and significand  23 for a Single Precision x86 floating point number.
+
+#### In the x86 Floating-Point, a decimal number contains three components: a sign, a significand, and an exponent.
+
+True
+
+#### Select the correct EVEN parity 12 bit Hamming code value for the unsigned integer value 202
+
+0011  1000  1010 
+
+#### 1001  0011  0111 is an ODD parity 12 bit Hamming code that contains a single-bit error. What is the corresponding uncorrupted Hamming code?
+
+1001  0010  0111 
+
+#### 0111  0110  1011 is an EVEN parity 12 bit Hamming code that contains a single-bit error. What is the corresponding uncorrupted Hamming code?
+
+0111  0110  1111 
+
+
+#### Select the correct EVEN parity 12 bit Hamming code value for the unsigned integer value 55
+
+ 0001  0111  0111 
+
+
+
 
 ***
 

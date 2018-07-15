@@ -499,6 +499,8 @@ Byte is the smallest unit of data that can be manipulated directly in the IA-32 
 
 ### 32-bit general-purpose registers
 
+Extented
+
 EAX / EBX / ECX / EDX
 
 - EAX and EDX are automatically used by integer multiplication and division instruction

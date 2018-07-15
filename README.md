@@ -9,4 +9,8 @@
 - Syntax and Rules of the MASM Language
 
 
-
+[Conditions, Controls, Constants, and Data Representation](https://github.com/WeiChienHsu/CS271/tree/master/week2)
+- Conditions and Control Structure
+- Repetition Structures
+- Defining Constants, Validating Data, Using the Debugger
+- Data Representation
