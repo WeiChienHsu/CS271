@@ -30,8 +30,7 @@ INCLUDE Irvine32.inc
 UPPER_LIMIT = 46
 LOWER_LIMIT = 1
 TAB = 9
-PERIOD = 46
-NUMBERS_PER_ROE = 5
+NUMBERS_PER_ROW = 5
 
 .data
 
@@ -46,17 +45,15 @@ greet_message     BYTE  " Hello, how are you ", 0
 error_outOfRange  BYTE  " Out of the range [1,46]. Please enter a number again: ", 0
 exit_message      BYTE  " Program credited by Wei-Chien Hsu. GoodBye! Enjoy coding. ", 0
 
-
 ; Numbers - For counting FIB numbers
-fibNumber         DWORD 1
-previousNumber    DWORD 0
-tempNumber        DWORD ?
+currentFibNumber  DWORD 1   ; Record current Fib Number
+prevFibNumber     DWORD 0   ; Record previous Fib Number to count the new one
+userInputInt      DWORD ?   ; Record a valid user input
+rowCounter        DWORD 0   ; Record the current Row number, meet 5 to renew
 
+; User Info
 userName          BYTE  21 DUP(0)
 byteCount         DWORD ?
-userInputInt      DWORD ?
-rowCounter        DWORD 0
-
 
 .code
 main PROC
@@ -70,8 +67,9 @@ main PROC
 	exit	; exit to operating system
 
 main ENDP
-
+; Introduction ---------------------------------------------------------
 ; Display the program title and programmer’s name and ask user's name.
+; ----------------------------------------------------------------------
 
 Introduction PROC
   mov   edx,  OFFSET intro_1
@@ -95,8 +93,11 @@ Introduction PROC
   ret
 Introduction ENDP
 
+; UserInstructions -----------------------------------------------------
 ; Prompt the user to enter the number of Fibonacci terms to be displayed. 
 ; Advise the user to enter an integer in the range [1 .. 46].
+; ----------------------------------------------------------------------
+
 UserInstructions PROC
   mov   edx,  OFFSET  greet_message ; greet user
   call  WriteString
@@ -112,7 +113,12 @@ UserInstructions PROC
 
 UserInstructions ENDP
 
+; GetUserData -----------------------------------------------------------------------------------
 ; Get and validate the user input (n).
+; Used a Do-While logic, let user to input their first option. If the input value is invalid
+; Go the the ERROR section to ask for a new number, if the input is valid, skip the ERROR section.
+; -----------------------------------------------------------------------------------------------
+
 GetUserData PROC
   DO:
         mov   edx,   OFFSET prompt_3
@@ -124,7 +130,7 @@ GetUserData PROC
         jg    ERROR
         cmp   userInputInt, LOWER_LIMIT ; Compare user input with lower limit
         jl    ERROR
-        jmp   VALIDINPUT
+        jmp   VALIDINPUT                ; If user input is valid, jump to VALIDINPUT section
 
         ; Ask user re-enter integer in the range
         ERROR:
@@ -132,22 +138,61 @@ GetUserData PROC
                 call  WriteString
                 call  CrLf
                 jmp   DO
+  ; Do nothing, just receive the user input
   VALIDINPUT:
+  call  CrLf
   ret
 GetUserData ENDP
 
 
-displayFibs PROC
+; DisplayFibs -----------------------------------------------------------------------------------
+; 
+; 
+; 
+; -----------------------------------------------------------------------------------------------
 
-displayFibs ENDP
 
+DisplayFibs PROC
+  mov   ecx, userInputInt ; Load user input
+  FibSequence:
+                mov   eax, currentFibNumber ; Load current Fib starts from 1
+                call  WriteDec
+                cmp   currentFibNumber, 14930352 ; n = 36, n = 35 -> 9227465 smaller than 8 digits
+                jge   needMoreTab
+                mov   al, TAB                    ; Inorder to Display the numbers in aligned columns
+                call  WriteChar
+  needMoreTab: 
+                mov   al, TAB
+                call  WriteChar
+                mov   eax, currentFibNumber ; Record current Fib Number for the nwe value
+                mov   ebx, currentFibNumber ; Record current Fib Number for the previous value
+                add   eax, prevFibNumber    ; Sum current and previous number
+                mov   prevFibNumber, ebx    ; Used the temporay stored number in the ebx for previous number
+                mov   currentFibNumber, eax ; Assign the result of sum in eax to current Value
+                inc   rowCounter            ; Finished count one single number, row counter plus one
 
-farewell PROC
+                cmp   rowCounter, NUMBERS_PER_ROW ; Check if the new row is needed which is equal to limit number 5
+                jne   NoNeedForNewRow
+                mov   rowCounter, 0
+                call  CrLf
+
+                NoNeedForNewRow:
+                loop  FibSequence
+  call  CrLf
+  call  CrLf
+  ret
+
+DisplayFibs ENDP
+
+; Farewell -------------------------
+; Say Good BYE ~~~~
+; ----------------------------------
+
+Farewell PROC
   mov   edx,  OFFSET exit_message
   call  WriteString
   call  CrLf
   ret
-farewell ENDP
-
+Farewell ENDP
 
 END main
