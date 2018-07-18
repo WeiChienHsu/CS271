@@ -14,3 +14,19 @@
 - Repetition Structures
 - Defining Constants, Validating Data, Using the Debugger
 - Data Representation
+
+[Bits, Bytes, Floating Point and Error Detection/Correction](https://github.com/WeiChienHsu/CS271/tree/master/week3)
+
+- Binary Arithmetic
+- Byte Ordering
+- Floating-Point Representation
+- Error-detecting & Error-correcting Codes
+- Hamming Code
+
+[MASM Procedures and the System Stack](https://github.com/WeiChienHsu/CS271/tree/master/week4)
+
+- Modularization & MASM Procedures
+- MASM Procedures(Visual Studio Example)
+- The System Stack
+- More About MASM Procedures
+- Parameter Passing Introduction
