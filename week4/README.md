@@ -194,3 +194,167 @@ calculate PROC
   ret
 calculate ENDP
 ```
+
+***
+
+## Saving registers
+
+If a procedure changes any registers, the calling procedure might lose important data.
+
+### So, there are two ways to save data:
+
+1. By the calling procedure: Registers may be saved before call, and restored after return
+
+2. By the called procedure: Register may be saved at the beginning of the procedure, and restore before the return 
+
+### Methods
+
+1. Move register contents to named memory locations, then restore after procedure retruns.
+
+2. Us push and pop : Option1 : calling procedure pushes before call, pops after return || Option2: called procedure pushes at beginning, and pops before return.
+
+3. Slelcted registers on the system stack by push and pop. (General used by high level language)
+
+
+### Example (in main... aReg, bReg declated in .data)
+
+#### Method1 :Save register contents in memory
+
+```asm
+mov   aReg, eax     ; save registers
+mov   bReg, ebx
+
+mov   eax,  count   ; set parameters
+mov   ebx,  OFFSET val
+
+mov   eax, aReg     ; restore registers
+mov   ebx, bReg 
+```
+
+#### Method2 : Save all registers on the system stack
+
+```
+pushad pushes the 32-bit general-purpose registers onto the stack
+- order: EAX, ECX, EDX, EBX, ESP, EBP, ESI, EDI
+
+popad pops the same registers off the stack in reverse order
+
+pusedas   ; save registers
+call    somePROC
+popad     ; restore registers
+```
+
+```
+calcSum   PROC
+  pushad    ; save registers
+  ...
+; procedure body
+  ...
+  popad     ; restore registers
+  ret
+calcSum   ENDP
+
+```
+
+#### Method3 : Save selected registers on the system stack
+
+```
+push eax ; pushes the contents of eax onto the system stacl
+pop eax  ; pops the top of the system stack into eax
+```
+
+***
+
+## Generating a "listing" file
+
+- At Assembled Code Listing File -> $(InputName).lst
+- Lising file shows (hex) offsets of Labels in .data and Instruction and labels in .code
+- Also show (hex) opcodes and oprand offsets
+
+***
+
+## Parameter Passing Intoduction
+
+### Definitions:
+
+#### Arguument (Actual parameter)
+is a value or reference passed to a procedure.
+
+#### Parameter (Formal parameter)
+is a value or refernce received by a procedure.
+
+#### Return value
+is a value determined by the procedure, and communicated back to the calling procedure.
+
+***
+
+# Parameter Classifications
+
+### Input Parameter
+An input parameter is data passed by a calling program to a procedure. The called procedure is not expected to modify the corresponding argument variable, and even if it does, the modification is confined to the procedure itself.
+
+### Output Parameter (Value will not be used but will assign new Value)
+An output parameter is created by passing the address of an argument variable when a procedure is called. The address of a variable is the same as a pointer to or a reference to the variable. In MASM, we use OFFSET.
+
+The procedure does not use any existing data from the variable, but it fills in new contents before it returns.
+
+### Input - Output parameter
+Is the address of an argument variable which contains input that will be both used and modified by the procedure. The content is modified at the memory address.
+
+
+## Method
+### 1. Use shared memory (global variables - BAD)
+
+Set up memory contents before call and/or before return.
+
+Generally it's a bad idea to use global variables.
+
+Procedure might change memory contents needed by other procedures.(Unwanted side-effects)
+
+### 2. Pass parameter in registers
+
+Set up registers before call and/or before return.
+
+Generally it;s not a good idea to pass parameters in registers, Procedure might change register contents.
+
+### 3. Pass parameters on the system stack
+
+Push parameter onto the system stack before the call
+
+Two ways to use the parameters:
+
+- Procedure moves parameters from the stack into registers/variables
+- Set up a "set frame", and reference parameters directly on the stack.
+
+Remove parameters and return to the calling program.
+
+***
+## Registers and Stack Parameters
+
+### Register parameters require dedicating a register to each parameter.
+
+- Require register management.
+- They's only one set of registers, if a called procedure changes any registers, the calling producre might lose important data.
+
+```
+pushad ; save registers
+mov ebx, low
+mov ecx, high
+call Summation
+mov sum, eax
+popad  ; restore registers
+
+```
+
+### Stack parameters make better use of system resources.
+
+- Require Stack managment.
+
+```
+push low
+push high
+push OFFSET sum ; place want result to be stored
+call Summation
+```
+***
+
