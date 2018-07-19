@@ -6,8 +6,7 @@ TITLE Program Assignment3 -  Composite Numbers Printer  (Assignment3.asm)
 ; Course number/section: CS 271 Summer 2018
 ; Assignment Number: Programming Assignment #3  Due Date: 07/24/18
 ; First, the user is instructed to enter the number of composites to be displayed, 
-; and is prompted to enter an integer in the range [1 .. 400]. The user enters a number, n, 
-; and the program verifies that 1 ≤ n ≤ 400. 
+; and is prompted to enter an integer in the range [1 .. 400].
 ; If n is out of range, the user is reprompted until s/he enters a value in the specified range. 
 ; The program then calculates and displays all of the composite numbers up to and including the 
 ; nth composite. The results should be displayed 10 composites per line with at least 3 spaces 
@@ -20,7 +19,7 @@ TITLE Program Assignment3 -  Composite Numbers Printer  (Assignment3.asm)
 ;    It should be a readable “list” of what the program will do.
 ; 4. Each procedure will implement a section of the program logic, i.e., each procedure will specify
 ;    how the logic of its section is implemented. The program must be modularized into at least the
-;    following procedures and sub-procedures :
+;    following procedures and sub-procedures:
 ; introduction / getUserData / validate / showComposites / isComposite / farewell
 ; 5. The upper limit should be defined and used as a constant.
 ; 6. Data validation is required. If the user enters a number outside the range [1 .. 400] an error 
@@ -53,10 +52,10 @@ prompt3_EC		    BYTE	  "EC:: Uses prime divisors to find composite numbers.", 0
 userInputNumber   DWORD   ?
 
 ; Error message
-error_message     BYTE    " Please enter the number in range [1 ... 4000] again: ", 0 
+error_message     BYTE    " Please enter the number in range [1 ... 400] again: ", 0 
 
 ; Calculation of composite numbers
-firstCompositie   DWORD    4                      ; The number for testing
+firstComposite   DWORD    4                      ; The number for testing
 numberCount       DWORD    ?                      ; Record the total composite number
 primesNumber      DWORD    2, 3, 5, 7, 0          ; Prime number as a divisor
 
@@ -70,8 +69,8 @@ twoSpaces         BYTE   "  ", 0  ; Align two digit numbers
 singleSpace       BYTE   " ", 0   ; Align one digit numbers
 
 ; Fareware
-say_goodbye        BYTE  "Results credited by Wei-Chien Hsu. Enjoy ecoing! Bye!" , 0
-
+say_goodbye_1     BYTE  "Results credited by Wei-Chien Hsu." , 0
+say_goodbye_2     BYTE  "Enjoy ecoing! Bye!", 0
 
 .code
 main PROC
@@ -89,14 +88,19 @@ main ENDP
 Introduction PROC
   mov     edx, OFFSET intro_1
   call    WriteString
+  call    CrLf
   mov     edx, OFFSET intro_2
   call    WriteString
+  call    CrLf
   mov     edx, OFFSET prompt1_EC
   call    WriteString
+  call    CrLf
   mov     edx, OFFSET prompt2_EC
   call    WriteString
+  call    CrLf
   mov     edx, OFFSET prompt3_EC
   call    WriteString
+  call    CrLf
   call    CrLf
   ret
 Introduction ENDP
@@ -134,7 +138,7 @@ Validate PROC
 OutOfRange: ; Ask user to ENTER another number
   mov     edx, OFFSET error_message
   call    WriteString
-  call    CrLfc
+  call    CrLf
   call    GetUserData          ; Back to GetUserData for asking input 
 
 InputValidated: ; User's input is valid, continue to set up variables to display
@@ -144,12 +148,51 @@ InputValidated: ; User's input is valid, continue to set up variables to display
   ret
 Validate ENDP
 
-;------------------------------------
-;
-;------------------------------------
+;---------------------------------------------------------
+; ShowComposites Procedures
+; Chekc if the number of composites found will exceed
+; the number that could be fit in the page by comparing
+; MAX_NUMBER_PER_PAGE variable.
+;---------------------------------------------------------
 ShowComposites PROC
 
+Display:
+  mov     eax, pageCount                ; Counter is used to record the current nunmber in this page
+  cmp     eax, MAX_NUMBER_PER_PAGE  
+  je      GetNewPage
+  mov     eax, userInputNumber          ; Compare the number user input with the current displayed number
+  cmp     eax, numberCount
+  je      exitLoop                      ; Exit the Loop when displayed number equal to user's requests
+
+  call    IsComposite                   ; Check the current number
+  inc     firstComposite                ; Increment the Recorded Composite number when we got return value form isComposite
+  mov     eax,  columns                 
+  cmp     eax,  MAX_NUMBER_PER_COLUMN   ; Compare current column to make sure the display is valid
+  je      GetNewLine                    ; Jump to the new Linke
+  jmp     Display                       ; Back to the loop, to check the next number
+
+GetNewLine:   ; Display a new line for formatting.
+  call    CrLf
+  mov     column, 0                     ; Renew the column
+  jmp     Display
+
+GetNewPage:   ; Ask user to continue.
+  mov     edx, OFFSET prompt_NEXT       ; Ask user to press ENTER 
+  call    WriteString
+
+WaitForUser:  ; Wait until user press ENTER to contunue. 
+  mov     eax, 50                       ; 
+  call    Delay                         ; Delay the OS to time slice for waiting user input
+  call    WaitForUser                   ; Still not press ENTER
+
+  mov     pageCount, 0                   ; Reset the number in the page since we have already changed the page
+  call    CrLf
+  call    Credit1
+  jmp     Display
+
+exitLoop:   ; When the number of compositrs displayed equal to user's input
   ret
+
 ShowComposites ENDP
 
 ;------------------------------------
@@ -173,11 +216,14 @@ Formatting ENDP
 ;
 ;------------------------------------
 Farewell PROC
+  mov     edx, OFFSET say_goodbye_1
+  call    WriteString
   call    CrLf
-  mov     edx, OFFSET say_goodbye
-  call    CrLf
+  mov     edx, OFFSET say_goodbye_2
+  call    WriteString
+  call    CrLf  
   ret
-FarewellENDP
+Farewell ENDP
 
 
 END main
