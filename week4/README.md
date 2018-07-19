@@ -151,3 +151,46 @@ ret 的時候，會將當時的 EIP，存入當時的 Stack 當中。
 | 0058 call validate    | 0058       | 0068      |  03FC      | 03F8      |
 | 008A ret (in validate)| 008A       |005D(放03F8)|  03F8     | 03FC      |
 | 0000 ret(in getData)  | 0067       |000A(放O3FC)|  03FC      | 0400     |
+
+
+***
+
+## Beware in MASM procedures
+
+### Avoid duplicate labels
+- labels are global identifiers
+- Don't use the same label names in different procedures
+
+### Preconditions
+Be sure to set required registers before calling library procedures.
+
+### Be aware of registers changed in procedures
+
+### Only invoked by excuting a CALL statement.
+
+### Should terminate by executing a ret statement
+
+### Nested procedure calls
+- Any procedure might CALL another procedure
+- Return addresses are "stacked" (LIFO)
+- RET instructions must follow the order on the stack (Not to jump into or out of a procedure!)
+
+## Documenting Procedures
+- Description: Task accomplished by the procedure.
+- Receives: List of input parameters, state usage and requirement.
+- Retures: Value returned by the procedure.
+- Preconditions: Must be satisfied before the procedure is called.
+- Registers changed: List of registers that may have different values than they had when the procedure was called.
+
+```
+; Procedure to calculate the summation of integers from a to b
+; receives: a and b are global variables.
+; returns : global sum = a + (a+1) + ... + b
+; precondtions: a <= b
+; registers changed :eax, ebx, ecx
+
+calculate PROC
+
+  ret
+calculate ENDP
+```
