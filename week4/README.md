@@ -358,3 +358,94 @@ call Summation
 ```
 ***
 
+## Practice
+
+### Place the stesp for creating a stack frame in the correct order
+
+1) Passed arguments, if any, are pushed on the stack.
+
+2) The subroutine is called, causing the subroutine return address to be pushed on the stack.
+
+3) As the subroutine begins to execute, EBP is pushed on the stack.
+
+4) EBP is set equal to ESP. From this point on, EBP acts as a base reference for all of the subroutine parameters.
+
+5) If there are local variables, ESP is decremented to reserve space for the variables on the stack.
+
+6) If any registers need to be saved, they are pushed on the stack.
+
+### A subroutine’s stack frame always contains the caller’s return address and the subroutine’s local variables.
+
+True.
+
+### Which action must take place inside a procedure to reserve space on the stack for two doubleword local variables?
+
+after MOV EBP,ESP, subtract 8 from the stack pointer (ESP) 
+
+### Passing by reference requires dereferencing a parameter’s offset from the stack inside the called procedure.
+
+TRUE
+
+### The four-byte sequence 0x87 0x8B 0xDD 0x6A stored in consecutive memory cells in a little-endian architecture represents ___________ (decimal) when interpreted as a 32-bit signed integer.
+
+Transfer to 0x 6ADD8B87 -> And transfer to Decimal Number (Signed or Undigned)
+
+
+### Local variables are created by adding a positive value to the stack pointer.
+
+False
+
+
+### When an argument is passed by value, a copy of the address is pushed on the stack.
+
+False
+
+
+### Another name for a stack frame is
+  Activation record 
+
+### What general types of parameters are passed on the stack?
+
+Reference arguments 
+Value arguments
+
+### Assuming that a procedure contains no local variables, a stack frame is created by which sequence of actions at runtime?
+
+ arguments pushed on stack; 
+ procedure called; 
+ EBP pushed on stack; 
+ EBP set to ESP 
+
+### Passing by reference requires dereferencing a parameter’s offset from the stack inside the called procedure.
+
+True
+
+### Which of the following defines an array local variable consisting of 50 signed words?
+
+LOCAL wArray[50]:SWORD 
+
+### High-level languages always pass arrays to subroutines by value.
+False
+
+### Which offers a more flexible approach, passing arguments to procedures in registers, or on the stack?
+
+On the stack
+
+### When values are received by a called subroutine, they are called _________.
+
+Parameters
+
+### Values passed to a subroutine by a calling program are called _____.
+
+Arguments
+
+
+### A subroutine’s stack frame always contains the caller’s return address and the subroutine’s local variables.
+
+True
+
+
+### Arrays are passed by reference to avoid copying them onto the stack.
+
+True
+
