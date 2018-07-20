@@ -55,7 +55,7 @@ userInputNumber   DWORD   ?
 error_message     BYTE    " Please enter the number in range [1 ... 400] again: ", 0 
 
 ; Calculation of composite numbers
-firstComposite   DWORD    4                      ; The number for testing
+currentComposite   DWORD    4                      ; The number for testing
 numberCount       DWORD    ?                      ; Record the total composite number
 primesNumber      DWORD    2, 3, 5, 7, 0          ; Prime number as a divisor
 
@@ -165,7 +165,7 @@ Display:
   je      exitLoop                      ; Exit the Loop when displayed number equal to user's requests
 
   call    IsComposite                   ; Check the current number
-  inc     firstComposite                ; Increment the Recorded Composite number when we got return value form isComposite
+  inc     currentComposite                ; Increment the Recorded Composite number when we got return value form isComposite
   mov     eax,  columns                 
   cmp     eax,  MAX_NUMBER_PER_COLUMN   ; Compare current column to make sure the display is valid
   je      GetNewLine                    ; Jump to the new Linke
@@ -173,7 +173,7 @@ Display:
 
 GetNewLine:   ; Display a new line for formatting.
   call    CrLf
-  mov     column, 0                     ; Renew the column
+  mov     columns, 0                     ; Renew the column
   jmp     Display
 
 GetNewPage:   ; Ask user to continue.
@@ -181,13 +181,14 @@ GetNewPage:   ; Ask user to continue.
   call    WriteString
 
 WaitForUser:  ; Wait until user press ENTER to contunue. 
-  mov     eax, 50                       ; 
+  mov     eax, 50                       
   call    Delay                         ; Delay the OS to time slice for waiting user input
-  call    WaitForUser                   ; Still not press ENTER
+  call    ReadKey                   ; Still not press ENTER
+  jz      WaitForUser
 
   mov     pageCount, 0                   ; Reset the number in the page since we have already changed the page
   call    CrLf
-  call    Credit1
+  call    CrLf
   jmp     Display
 
 exitLoop:   ; When the number of compositrs displayed equal to user's input
@@ -195,31 +196,95 @@ exitLoop:   ; When the number of compositrs displayed equal to user's input
 
 ShowComposites ENDP
 
-;------------------------------------
-;
-;------------------------------------
+;-------------------------------------------------------------------
+; IsComposite
+; Use userInputNumber to calculate the number of composite numbers.
+; Extra Credit:: Use the Stack and prime number as divisor to make 
+; the calculation of composite number more effocoent.
+;-------------------------------------------------------------------
 IsComposite PROC
+  pushad                            ; Push All Registers to the Stack
+  mov   eax, currentComposite       ; Put current number into eax to compare with other prime number
+  cmp   eax, 5
+  je    Skip                        ; 5 is not a composite number
+  cmp   eax, 7                       
+  je    Skip                        ; 7 is not a composite number
+  mov   ebx, 0                      ; Reset the ebx to 0
+  mov   esi, OFFSET primesNumber    ; Prime numbers set as diviosr and put it into ESI register waiting be poped
 
+CalculateIsComposite:   ; See if the current integer is composite.
+  mov		edx, 0											; Reset edx as 0, since we need it to record reminder in the future
+  mov		eax, currentComposite				; Move current number into eax to be divided in the future
+  mov		ebx, [esi]									; Deference the contents of address ESI into EBX.
+  div		ebx												 
+  cmp		edx, 0											; Check if the reminder is 0 or not (is 0 means it is composite)
+  jz		FoundComposite							; If equal to 0, jump to FoundComposite
 
-  ret
+  inc		esi												  ; Incrememt the ESI register, which is poped from stack, and go to next prime numbers
+  mov		ebx, [esi]									; Deference the contents of address ESI into EBX..
+  cmp		ebx, 0											; If ebx equal to 0 means all the prime number are used
+  je		Skip											  ; If equal to 0, jump to the Skip.
+  jmp		CalculateIsComposite				; Haven't finished this number, jump back to the Calculations.  
+
+FoundComposite:          ; When we found the composite number, need to display it
+  mov     eax, currentComposite			; Move the found integer (as Composite Number) into the eax register.
+  call    formatting								; Call Formatting and find a right way of using the spaces
+  call    WriteDec									; Print out this number on the screen
+  inc     numberCount								; Increment the number we found
+  inc     columns										; Increment columns.
+  inc     pageCount									; Increment the numbers in this single page.
+
+Skip:                               
+  popad                             ; Pop the values back off the stack in reverse order,
+  ret                               ; at the same time, we store the composite we found as well.
 IsComposite ENDP
 
-;------------------------------------
-;
-;------------------------------------
+;--------------------------------------------------------------------
+; Formatting Procedure
+; Compare the number of digits in the composite number to determine the 
+; numbers of spaces be printed after the found integer displayed on 
+; screen. (For extra credits)
+;--------------------------------------------------------------------
 Formatting PROC
 
-  ret
+    pushad												
+    mov		eax, numberCount							
+    cmp		eax, 10											; if current found numbers less than 10, jump to SingleDigit
+    jl		SingleDigit										
+    cmp		eax, 100										; if current found numbers less than 100, jump to twoDigits
+    jl		twoDigits										
+    cmp		eax, 1000										; if current found numbers less than 1000, jump to threeDigits
+    jl		threeDigits									
+
+SingleDigit:  ; Print three spaces 
+    mov		edx, OFFSET threeSpaces				
+    call	WriteString									; Print three Spaces to the screen.
+    jmp		EndFormatting								; End formatting
+
+TwoDigits:    ; Print two spaces
+    mov		edx, OFFSET threeSpaces				
+    call	WriteString									; Print two Spaces to the screen.
+    jmp		EndFormatting								; End formatting
+
+ThreeDigits:  ; Print a single space
+    mov		edx, OFFSET singleSpace				
+    call	WriteString									; Print one Space to the screen.
+    jmp		EndFormatting								; End formatting
+
+EndFormatting:
+    popad                             ; In the end, pop values back off the stack
+    ret
 Formatting ENDP
 
 ;------------------------------------
-;
+; Farewell Procedure
 ;------------------------------------
 Farewell PROC
-  mov     edx, OFFSET say_goodbye_1
+  call    CrLf
+  mov     edx, OFFSET say_goodbye_1   ; Display the goodbye message
   call    WriteString
   call    CrLf
-  mov     edx, OFFSET say_goodbye_2
+  mov     edx, OFFSET say_goodbye_2   ; Display the goodbye message
   call    WriteString
   call    CrLf  
   ret
