@@ -81,3 +81,50 @@ WriteInt, WriteDex - Writes an integer to the screen(Precondition: value in EAX)
 WriteString - Writes a null-terminated string to the screen (Precondition: OFFSET of memory location in EDX)
 
 ***
+
+## Repetition Structures
+
+### Pre-test loop (While)
+
+```
+    mov   eax, x      ; initialize accumulator
+dbLoop:               ; Double x while x <= 1000 (When s is positive)
+    cmp   eax, 1000
+    jg    endLoop
+    add   eax, eax
+    jmp   dblLoop
+endLoop: 
+    mov   x, eax
+```
+
+### Post-test loop (do-while)
+
+```acm
+; initialize accumulator, first number, and loop control
+  mov   eax, 0  ; accumularor
+  mov   ebx, 1  ; increment each time when going through loop
+  mov   ecx, 10 ; loop control
+
+sumLoop:  ; add integers from 1 to 10
+  add   eax, ebx
+  inc   ebx         ; add 1 to ebx
+  loop  sumLoop     ; subtract 1 from ecx
+                    ; if ecx != 0, go to sumLoop
+  call  WriteDec
+```
+
+## Binary form of negative
+
+-13 in 16-bit two-complement
+
+```
+| -13 | = 13 =    0000 0000 0000 1101
+one complement is 1111 1111 1111 0010
+add 1 to get      1111 1111 1111 0011 = -13
+```
+
+## Character and control codes
+
+ASCII 256 codes (1-byte)
+- 'A' ... 'Z' are codes 65 - 90
+- '0' ... '9' are codes 48 - 57
