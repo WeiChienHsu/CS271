@@ -47,6 +47,55 @@ Permitted for the operands associated with each code.
 - Direct   : Contents of referenced memory address
 - Offset   : Memory address; may be calculated
 
+***
+## Grneral Purpose Registers
+
+```
+一般寄存器:AX、BX、CX、DX
+AX:累积暂存器，BX:基底暂存器，CX:计数暂存器，DX:资料暂存器
+
+索引暂存器:SI、DI
+SI:来源索引暂存器，DI:目的索引暂存器
+
+堆叠、基底暂存器:SP、BP
+SP:堆叠指标暂存器，BP:基底指标暂存器
+```
+
+EAX、ECX、EDX、EBX：為ax,bx,cx,dx的延伸，各為32位元
+ESI、EDI、ESP、EBP：為si,di,sp,bp的延伸，32位元
+
+eax, ebx, ecx, edx, esi, edi, ebp, esp等都是X86 汇编语言中CPU上的通用寄存器的名称，是32位的寄存器。如果用C语言来解释，可以把这些寄存器当作变量看待。
+
+比方说：add eax,-2 ; //可以认为是给变量eax加上-2这样的一个值。
+
+
+
+这些32位寄存器有多种用途，但每一个都有“专长”，有各自的特别之处。
+
+- EAX 是"累加器"(accumulator), 它是很多加法乘法指令的缺省寄存器。
+
+- EBX 是"基地址"(base)寄存器, 在内存寻址时存放基地址。
+
+- ECX 是计数器(counter), 是重复(REP)前缀指令和LOOP指令的内定计数器。
+
+- EDX 则总是被用来放整数除法产生的余数。
+
+- ESI/EDI分别叫做"源/目标索引寄存器"(source/destination index),因为在很多字符串操作指令中, DS:ESI指向源串,而ES:EDI指向目标串.
+
+- EBP是"基址指针"(BASE POINTER), 它最经常被用作高级语言函数调用的"框架指针"(frame pointer). 在破解的时候,经常可以看见一个标准的函数起始代码:
+```　
+push ebp ;保存当前ebp
+mov ebp,esp ;EBP设为当前堆栈指针
+sub esp, xxx ;预留xxx字节给函数临时变量.
+```
+
+这样一来,EBP 构成了该函数的一个框架, 在EBP上方分别是原来的EBP, 返回地址和参数. EBP下方则是临时变量. 函数返回时作 mov esp,ebp/pop ebp/ret 即可.
+
+- ESP 专门用作堆栈指针，被形象地称为栈顶指针，堆栈的顶部是地址小的区域，压入堆栈的数据越多，ESP也就越来越小。在32位平台上，ESP每次减少4字节。
+
+
+***
+
 ## Operands
 
 ### Mul
@@ -144,4 +193,43 @@ ASCII 256 codes (1-byte)
 
 ***
 
-# Week3
+# Indirect Addressing
+Use a register as a pointer and manipulate the register's value. (EAX,EBX,ECX,EDX,ESI,EDI,EBP,ESP) surrounded by brackets. The register is assumed to contain the address of some data. 
+
+```
+.data
+byteVal BYRE 10h
+.code
+mov esi, OFFSET byteVal
+mov al, [esi]
+```
+ESI contains the offset of byteVal. The MOV instruction uses the indirect operand as the source, the offset in ESI is dereferenced, and a byte is moved to AL.
+
+## Arrays
+```
+.data
+arrayW WORD 1000h, 2000h, 3000h
+.code
+mov esi, OFFSET arrayW
+mov ax, [esi]           ; ax = 1000h
+add esi 2
+mov ax, [esi]           ; ax = 2000h
+add esi 2
+mov ax, [esi]           ; ax = 3000h
+```
+
+```
+.data
+arrayD DWORD 1000h, 2000h, 3000h
+.code
+mov esi, OFFSET arrayD
+mov eax, [esi]
+add esi, 4
+add eax, [esi]
+add esi, 4
+add eax, [esi]
+```
+## Saving and Restroing Registers
+
+Procedures often save the current contents of registers on the stack before modifying them. Ideally, the registers in question should be pushed on the stack just after setting EBP to ESP, and just before reserving space for local variables. This helps us to avoid changing offsets of existing stack parameters.
+
