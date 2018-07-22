@@ -166,3 +166,66 @@ You should be able to convert representations
 
 ***
 
+# Floating-Point Binary Representation
+Contains Three Components: A sign, A significand and an exponent.
+
+"-1.23154 * 10 ^ 5":
+- sign: negative
+- significand: 1.23154
+- exponent: 5
+
+## The Sign
+If the sign bit is 1, the number is negative
+If the sign bit is 0, the number is positive
+
+## The Significand
+Binary floating-point numbers also use weighted positional notation.
+
+```
+11.1011 = 2 + 1 + 1/2 + 0/4 + 1/8 + 1/16 = 3 + 11/16 = 0.6875
+```
+
+|Binary Floating-Point| Base-10 Fraction |
+|:-------------------:|:----------------:|
+| 11.11               |  3 3/4           |
+| 101.0011            |  5 3/16          |
+| 1101.100101         | 13 37/64         |
+| 0.00101             |    5/32          |
+| 1.011               |    1 3/8         |
+
+
+## The Exponent
+
+Single precision exponents are stroed as 8-bit unsigned integers with a bias of 127. The number's actual exponent must be added to 127. Consider the binary value 1.101 * 2 ^ 5 : After the actual exponent (5) is added to 127, the based exonent (132) is stored in the number's representation.
+
+| Exponent (E) | Biased (E + 127) | Binary       |
+|:------------:|:----------------:|:------------:|
+| +5           | 132              |10001000      |
+| 0            | 127              |01111111      |
+| -10          | 117              |01110101      |
+| +127         | 254              |11111110      |
+| -126         |   1              |00000001      |
+| -1           | 126              |01111110      |
+
+***
+
+### Single Precision Bit Encodings
+
+- Transfer to Normalized Binary Floating-Point Numbers first.
+
+| Binary Value | Biased Exponent  | Sign,  Exponent, Fraction         |
+|:------------:|:----------------:|:---------------------------------:|
+| -1.11        | 127              |1 01111111 110000000000000000000000|
+| +1101.101    | 130              |0 10000010 110110100000000000000000|
+| -0.00101     | 124              |1 01111100 010000000000000000000000|
+| +100111.0    | 132              |0 10001000 001110000000000000000000|
+
+### Converting Single Precision Values to Decimal
+
+IEEE (0 10000010 0101100000000000000) To Decimal
+
+1. The number is positive
+2. The Unbiased exponent is binray 00000011 equal to dicimal 3
+3. Combining the sign, exponent and significand, the binary number is +1.01011 * 10 ^ 3
+4. Denormalized binary number is +1010.11
+5. Equals to 8 + 2 + 1/2 + 1/4 = 10 3/4 = 10.75

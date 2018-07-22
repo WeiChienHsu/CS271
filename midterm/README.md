@@ -128,3 +128,20 @@ add 1 to get      1111 1111 1111 0011 = -13
 ASCII 256 codes (1-byte)
 - 'A' ... 'Z' are codes 65 - 90
 - '0' ... '9' are codes 48 - 57
+
+#### Select the correct EVEN parity 12 bit Hamming code value for the unsigned integer value 202
+
+0011  1000  1010 
+
+#### 1001  0011  0111 is an ODD parity 12 bit Hamming code that contains a single-bit error. What is the corresponding uncorrupted Hamming code?
+
+1001  0010  0111 
+
+#### 0111  0110  1011 is an EVEN parity 12 bit Hamming code that contains a single-bit error. What is the corresponding uncorrupted Hamming code?
+
+0111  0110  1111 
+
+
+***
+
+# Week3
