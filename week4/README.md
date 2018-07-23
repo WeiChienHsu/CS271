@@ -211,7 +211,7 @@ If a procedure changes any registers, the calling procedure might lose important
 
 1. Move register contents to named memory locations, then restore after procedure retruns.
 
-2. Us push and pop : Option1 : calling procedure pushes before call, pops after return || Option2: called procedure pushes at beginning, and pops before return.
+2. Use push and pop : Option1 : calling procedure pushes before call, pops after return || Option2: called procedure pushes at beginning, and pops before return.
 
 3. Slelcted registers on the system stack by push and pop. (General used by high level language)
 

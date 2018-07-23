@@ -281,6 +281,10 @@ ReadInt: reads a 32-bit signed decimal integer from standard input. call WriteIn
 
 
 important uses of runtime stacks in programs: 1) When the CALL instruction executes, the CPU saves the current subroutine’s return address on the stack. 2) The stack provides temporary storage for local variables inside subroutines. 3) When calling a subroutine, you pass input values called arguments by pushing on the stack. 4) A stack makes a convenient temporary save area for registers when they are used for more than one purpose. After they are modified, they can be restored to their original values.
-
-
 Instructions used to manipulate the ESP register are: RET/ CALL/ PUSH/ POP
+
+Instruction execution cycle: Fetch the instruction at the address in Instruction Pointer into Instruction Register -> Increment the Instruction Pointer to point to next instruction -> Decode the instruction -> If the instruction requires memory access, determine the memory address and fetch the operand from memory into CPU register or send the operand from CPU register -> Execute the instruction -> If the output operand is in memory, the control unit use write operation to store the data
+
+
+The INC instruction does not affect the Carry flag.   XCHG reg,mem XCHG reg,reg XCHG mem,reg
+
