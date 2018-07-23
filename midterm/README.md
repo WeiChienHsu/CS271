@@ -233,3 +233,54 @@ add eax, [esi]
 
 Procedures often save the current contents of registers on the stack before modifying them. Ideally, the registers in question should be pushed on the stack just after setting EBP to ESP, and just before reserving space for local variables. This helps us to avoid changing offsets of existing stack parameters.
 
+***
+
+### Place the stesp for creating a stack frame in the correct order
+
+1) Passed arguments, if any, are pushed on the stack.
+
+2) The subroutine is called, causing the subroutine return address to be pushed on the stack.
+
+3) As the subroutine begins to execute, EBP is pushed on the stack.
+
+4) EBP is set equal to ESP. From this point on, EBP acts as a base reference for all of the subroutine parameters.
+
+5) If there are local variables, ESP is decremented to reserve space for the variables on the stack.
+
+6) If any registers need to be saved, they are pushed on the stack.
+
+
+
+***
+
+# Cheat Sheet
+
+ASCII alphabetic letters > than decimal digits |||  Assembly language instructions and machine language instructions? one to one. 
+Largest signed integer that may be stored in 32 bits. 2^31 – 1 |||   in 24 bits = 16,777,215
+Two's complement of an integer is formed? reversing (inverting) the bits and adding 1  |||  33, 95, 257 -> 21, 5F, 101
+Signed 33: 00100001 – 1 -> reverse: 11011111 = -33 -> reverse + 1 = signed 33
+1MB memory can be addressed in Real-address mode.  |||  4 parts of a CPU: clock, registers, control unit, arithmetic logic unit
+control bus: synchronize actions of all devices attached to the system bus. ||| 4GB memory can be addressed in Protected mode
+Time delay in a CPU caused by differences between the speed of the CPU, the system bus, and memory circuits? wait state
+instruction execution cycle is the program counter incremented: Fetch  |||   REAL8 defining 64-bit IEEE long reals
+List2 begins at offset 2000h. What is the offset of the third value (5)? List2 WORD 3,4,5,6,7 2004h.
+A program that combines object files into an executable program is a linker || ESI, EDI: 32-bit registers extended index registers
+The three types of buses connected to the CPU are data, address, control.
+An array of 500 signed doublewords named myList and initializes each element to the value -1. myList SDWORD 500 DUP (-1)
+big endian: The byte-ordering scheme to store large integers in memory with the high-order byte at the lowest address.
+.code: directive identifies the part of a program containing instructions.
+
+The following data segment starts at memory address 0x2300 (hexadecimal) dueDate DWORD ? -> 68 -> 0x2344 .data printString BYTE "Assembly is fun",0 = 16 + moreBytes BYTE 48 DUP(0) = 48 + dateIssued DWORD ? = 4 = 68
+Instruction Execution Cycle: Fetch/Decode/Fetch Operands/Execute/ Store output operands A common programming error is to inadvertently initialize ECX to zero before beginning a loop (when using the LOOP instruction).
+The USES operator, coupled with the PROC directive, lets you list the names of all registers modified within a procedure.
+
+ESI: contains the starting address of data when calling DumpMem? ESP:  always points to the last value to be added to, or pushed on, the top of stack. GetMseconds: procedure returns the number of milliseconds elapsed since midnight
+Gotoxy: procedure locates the cursor at a specific row and column on the screen. WriteHex:  writes an unsigned 32-bit integer to standard output in hexadecimal format  EDX: contains the offset of a character array when calling GetCommandTail. 
+ReadInt: reads a 32-bit signed decimal integer from standard input. call WriteInt: CALL instructions writes the contents of EAX to standard output as a signed decimal integer.
+
+
+
+important uses of runtime stacks in programs: 1) When the CALL instruction executes, the CPU saves the current subroutine’s return address on the stack. 2) The stack provides temporary storage for local variables inside subroutines. 3) When calling a subroutine, you pass input values called arguments by pushing on the stack. 4) A stack makes a convenient temporary save area for registers when they are used for more than one purpose. After they are modified, they can be restored to their original values.
+
+
+Instructions used to manipulate the ESP register are: RET/ CALL/ PUSH/ POP
