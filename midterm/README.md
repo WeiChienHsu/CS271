@@ -255,7 +255,7 @@ Procedures often save the current contents of registers on the stack before modi
 
 # Cheat Sheet
 
-ASCII alphabetic letters > than decimal digits |||  Assembly language instructions and machine language instructions? one to one. 
+ASCII alphabetic letters > than decimal digits |||  Assembly language instructions and machine language instructions: one to one. 
 Largest signed integer that may be stored in 32 bits. 2^31 – 1 |||   in 24 bits = 16,777,215
 Two's complement of an integer is formed? reversing (inverting) the bits and adding 1  |||  33, 95, 257 -> 21, 5F, 101
 Signed 33: 00100001 – 1 -> reverse: 11011111 = -33 -> reverse + 1 = signed 33
@@ -269,22 +269,79 @@ The three types of buses connected to the CPU are data, address, control.
 An array of 500 signed doublewords named myList and initializes each element to the value -1. myList SDWORD 500 DUP (-1)
 big endian: The byte-ordering scheme to store large integers in memory with the high-order byte at the lowest address.
 .code: directive identifies the part of a program containing instructions.
-
 The following data segment starts at memory address 0x2300 (hexadecimal) dueDate DWORD ? -> 68 -> 0x2344 .data printString BYTE "Assembly is fun",0 = 16 + moreBytes BYTE 48 DUP(0) = 48 + dateIssued DWORD ? = 4 = 68
-Instruction Execution Cycle: Fetch/Decode/Fetch Operands/Execute/ Store output operands A common programming error is to inadvertently initialize ECX to zero before beginning a loop (when using the LOOP instruction).
+Instruction Execution Cycle: Fetch/Decode/Fetch Operands/Execute/ Store output operands
+ A common programming error is to inadvertently initialize ECX to zero before beginning a loop 
 The USES operator, coupled with the PROC directive, lets you list the names of all registers modified within a procedure.
 
 ESI: contains the starting address of data when calling DumpMem? ESP:  always points to the last value to be added to, or pushed on, the top of stack. GetMseconds: procedure returns the number of milliseconds elapsed since midnight
 Gotoxy: procedure locates the cursor at a specific row and column on the screen. WriteHex:  writes an unsigned 32-bit integer to standard output in hexadecimal format  EDX: contains the offset of a character array when calling GetCommandTail. 
-ReadInt: reads a 32-bit signed decimal integer from standard input. call WriteInt: CALL instructions writes the contents of EAX to standard output as a signed decimal integer.
+ReadInt: reads a 32-bit signed decimal integer from standard input. call WriteInt: CALL instructions writes the contents of EAX to standard output as a signed decimal.  IsDigit:sets the Zero flag if the AL register contains the ASCII code for a decimal digit.
 
-
+EAX / EBX (base) / ECX (count, REP) / EDX (reminder) Speed: Optical Dick -> Main memory -> Cache -> Registers (Fastest)
 
 important uses of runtime stacks in programs: 1) When the CALL instruction executes, the CPU saves the current subroutine’s return address on the stack. 2) The stack provides temporary storage for local variables inside subroutines. 3) When calling a subroutine, you pass input values called arguments by pushing on the stack. 4) A stack makes a convenient temporary save area for registers when they are used for more than one purpose. After they are modified, they can be restored to their original values.
 Instructions used to manipulate the ESP register are: RET/ CALL/ PUSH/ POP
 
 Instruction execution cycle: Fetch the instruction at the address in Instruction Pointer into Instruction Register -> Increment the Instruction Pointer to point to next instruction -> Decode the instruction -> If the instruction requires memory access, determine the memory address and fetch the operand from memory into CPU register or send the operand from CPU register -> Execute the instruction -> If the output operand is in memory, the control unit use write operation to store the data
-
-
 The INC instruction does not affect the Carry flag.   XCHG reg,mem XCHG reg,reg XCHG mem,reg
+mov al, 0CFh; and al, 2Bh; -> 0Bh  |||  inverts bits 5 and 6 in BL without changing any other bits: xor bl,1100000b
+single instruction that clears bits 0, 3, and 4 in the AL register: and al,11100110b
+Single instruction that complements all bits in AL, without using the XOR instruction: not al
+DIV/MUL: mem/reg IMUL: reg, imm mem ||| The MUL (unsigned multiply) instruction comes in three versions.
+The operand of the MUL (unsigned multiply) instruction can be different sizes.
+Identify the sizes of the sign 1, exponent 8, and significand 23 for a Single Precision x86 floating point number.
+ODD parity 12 bit Hamming code value for the unsigned integer value 191 1010  0111  1111 |||  EVEN 137 : 0111  0000  1001
+0101 0000 1001 is an EVEN parity 12 bit Hamming code -> correct 0101 0000 1000
+Hamming Code: 1-> 3,5,7,9,11. 2 -> 3, 6, 7, 10, 11. 4 -> 5, 6, 7, 12. 8 -> 9, 10, 11, 12
 
+In the x86 Floating-Point, a decimal number contains three components: a sign, a significand, and an exponent.
+The CALL instruction pushes the address of the next instruction onto the stack and then loads the address of the called procedure into EIP. The JMP instruction has no effect on the system stack.
+
+
+
+
+Sign flag: indicates that an operation produced a negative result. Auxiliary Carry flag: set when a 1 bit carries out of position
+Parity flag :Indicates whether or not an even number of 1 bits occurs in the least significant byte of the destination operand, immediately after  an arithmetic or boolean instruction has executed.
+Stack parameters are compatible with high­level languages.Stack parameters reduce code clutter because registers do not have  to be saved and restored. A subroutines stack frame always contains the callers return address and the subroutines local variable
+arguments pushed on stack procedure called EBP pushed on stack EBP set to ESP.
+Which action must take place inside a procedure to reserve space on the stack for two doubleword local variables? after MO EBP,ESP, subtract 8 from the stack pointer (ESP)  ||| Instruction: label, mnemonic, operand(s), comment
+when the LOCAL directive is used to declare a doubleword variable push ebp | mov ebp,esp | sub esp,4
+a directive is executed at assembly time |  an instruction is executed at runtime 
+Carry flag: unsigned integer overflow. Overflow flag: signed integer overflow Zero flag: an operation produced zero
+When values are received by a called subroutine, they are called Parameters, passed Arguments
+stack frame (Activation record): The area of the stack set aside for passed arguments, subroutine return address, local variables, and saved registers.
+Assuming that a procedure contains no local variables, a stack frame is created by which sequence of actions at runtime? arguments pushed on stack; procedure called; EBP pushed on stack; EBP set to ESP
+Passing by reference requires dereferencing a parameter’s offset from the stack inside the called procedure.
+1.	pass argument, if any, are pushed on the stack
+2.	The subroutine is called, causing the subroutine return address to be pushed on the stack
+3.	As the subroutine begins to execute, EBP is pushed on the stack
+4.	EBP is set equal to ESP. From this point on, EBP acts as base reference for all the subroutine parameters
+5.	If there are local variables, ESP is decrement to reverse space for the variables on the stack
+6.	If any registers need to be saved, they are pushed on the stack.
+
+In the Intel x86 architecture, the register that always points to the next instruction to be executed is the: EIP
+Using the Intel IA32 instruction set please write a program that accepts an unsigned binary integer in the AX register and pushes the decimal ASCII equivalent value onto the system stack. For example, suppose that the AX register initially contains: 0b1001011001101011 (decimal value 38507). After your program has fully executed, the system stack should contain the following numbers
+
+; AX already contains the unsigned integer  MOV BX, 10000 ; I'll use BX to store my divisor  MOV CL, 10 ; Keep dividing the divisor by 10 First the divisor will be 10000, then it will be 1000, ; then 100, then 10  loopAgain:     MOV DX, 0 ; DIV instruction that divides DX:AX by 16 bit number and places the quotient in AX and the remainder in DX. 
+   DIV BX ; The quotient is in AX and the remainder is in DX ADD AX, 48 ; Convert the quotient into ASCII 
+   PUSH AX ; Push the ASCII value onto the stack If the remainder was 0 then we can quit 
+   CMP DX, 0 
+  JE finished ; Now we need to calculate the next divisor by dividing the existing divisor by 10 
+  MOV AX, BX ; Copy the current divisor into AX 
+  DIV CL ;Divide AX (the current divisor) by 10 AL now contains the next divisor 
+  MOVZX BX, AL ; Move AL into BX and fill the top byte with zeros Now move the dividend into AX so we can divide it 
+  MOV AX, DX ; (DX has the remainder from the first division) 
+JMP loopAgain ; Repeat the loop
+
+EAX = 3 (the last prime number that EBX pointed to)  EBX = 257 (the memory location of the last prime number that was used while factoring)  ECX = 3 (a copy of EAX)  EDX = 281 (the memory location of the newLine array)
+
+EAX = 1 (the number than the user initially provided)  EBX = 256 (the memory location of the first prime number in the array) 
+ECX = 0 (the code never changes ECX after it is initialized to 0)  EDX = 281 (the memory location of the newLine array)
+
+Yes, we are dividing EAX by the value in the primeNums array pointed to by EBX. AL and AH are portions of the EAX register. EAX was initialized to 0 in all 32 bits at the start of the program. Then, before we perform the division, we set AH to zeros and set AL to the value in the num variable. So everything in EAX is zeros except for the rightmost 8 bits, which are set to the value in the num variable. 
+
+AL is a symbol for a portion of the full EAX register. So if you changed the value in AL and then called WriteDec, WriteDec would print something based on the entire 32 bits in the EAX register, the rightmost 8 of which you just changed by modifying AL. If the other bits in EAX besides AL are not all zeros, it would print something you weren't expecting. That's why this program begins by setting the entire EAX register to 0.
+
+I think this explanation in the solutions document is incorrect, it should have said that ECX is set to the value in primeNums pointed to by EBX.
+primeNum's starting address is 100h, which converts to 256 in decimal. Adding 1 to 100h gives 101h, or 257 in decimal.
