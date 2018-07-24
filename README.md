@@ -30,3 +30,9 @@
 - The System Stack
 - More About MASM Procedures
 - Parameter Passing Introduction
+
+[Arrays and Passing Parameters](https://github.com/WeiChienHsu/CS271/tree/master/week5)
+
+- Passing Parameters on the Stack
+- Introduction to Arrays
+- Displaying Arrays & Using Random Numbers
