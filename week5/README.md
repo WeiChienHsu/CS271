@@ -1,4 +1,6 @@
-# RET Instruction
+# Passing Parameter into Stack
+
+## RET Instruction
 Pops stack into the instruction pointer (EIP)
 
 ### RET n 
@@ -33,14 +35,14 @@ WRONG -> [eax], [edx]
 ```
 
 ### Explicit Access to Stack Parameters
-A procedure can explicity access stack paramenters using constant offsets from EBP.
+A procedure can explicity access stack paramenters using constant offsets from EBP. (ex [ebp + 8] to get first parameter)
 
 EBP is often called the base pointer or frame pointer because it is set to the base address of the stack frame.
 
 EBP should not change value during the procedure. Must be restored to its original value when the procedure returns.
 
 
-ebp esp eip的几个特性：
+## ebp esp eip的几个特性：
 
 1. 主流编译器在函数调用的caller里，执行call指令会让eip(用来存储CPU要读取指令的地址) 入栈
 
@@ -107,3 +109,74 @@ esp 是动态的，只要出现 push/pop 动作，esp的值就会改变。在函
 
 所以，使用ebp压栈，并把此时esp传递给ebp后，一是为了安全，在子过程和父过程的栈之间有ebp，二是方便操作，在子过程里不用考虑esp在哪，都可以始终用ebp+8（这里描述的是32位处理器模式）来引用第一个参数，ebp+12引用第二个参数等，从子过程返回时，直接ebp赋值给esp，然后弹出恢复原ebp，此时esp指向父过程的返回地址，子过程正常返回
 
+***
+
+
+## Stack Frame Example
+
+```
+.data
+x DWORD 175
+y DWORD 37
+z DWORD ?
+.code
+main PROC
+  push x
+  push y
+  push OFFSET z
+  call SumTwo
+
+```
+
+|         |          |
+|:-------:|:--------:|
+| [ESP]   |  return@ |
+|[ESP+4]  |   %z     |
+|[ESP+8]  |  37      |
+|[ESP+12] | 175      |
+
+
+```
+SumTwo PROC
+  push ebp
+  mov  ebp, esp
+  mov  eax, [ebp + 16] ; 175 in eax
+  add  eax, [ebp + 12] ; add 37 in stack, push 212 in eax
+  mov  ebx, [ebp + 8]  ; Address of z in ebx
+  mov  [ebx], eax      ; store 212 in z
+  pop  ebp
+  ret  12
+Sum ENDP
+```
+- After mov ebp, esp
+
+|         |          |
+|:-------:|:--------:|
+| [ESP]   | old EBP  |
+|[ESP+4]  |  return@ |
+|[ESP+8]  |   %z     |
+|[ESP+12] |  37      |
+|[ESP+16] | 175      |
+
+- After pop ebp
+
+|         |          |
+|:-------:|:--------:|
+|[ESP+4]  |  return@ |
+|[ESP+8]  |   %z     |
+|[ESP+12] |  37      |
+|[ESP+16] | 175      |
+
+- After ret 12
+
+Pop out all ESP + 4 - ESP + 16
+
+***
+
+## Why dont we just use ESP instead of EBP
+
+- Pushes and Pops inside the procedure might cause us to lose the base of the stack frame.
+
+## Trouble Avoidance Tips
+
+Save and Restore registers when they are modified by a procedure. Exception: A Register that returns a function result.
