@@ -180,3 +180,14 @@ Pop out all ESP + 4 - ESP + 16
 ## Trouble Avoidance Tips
 
 Save and Restore registers when they are modified by a procedure. Exception: A Register that returns a function result.
+
+***
+
+# Introduction to Arrays
+
+
+
+
+***
+
+# Displaying Arrays & Using Random Numbers
