@@ -185,8 +185,145 @@ Save and Restore registers when they are modified by a procedure. Exception: A R
 
 # Introduction to Arrays
 
+## Declaration (in data segment)
 
+```
+MAX_SIZE = 100
+.data
+list DWORD   MAX_SIZE DUP(?)
+count DWORD  0
+```
 
+- Defines an uninitialized array named list with space for 100 32-bit integers.
+- Array elements are in contiguous memory.
+- count to track how many spaces are used. 
+- Array declaration defines a name for the first element only.
+
+- All other elements are accessed by calculating the actual address. (Without of starting from beginning and count it from start)
+- General formula for array address calculation:
+
+```
+address of list[k] = address of list + (k * sizeof element)
+```
+
+### If we reference list[100] 
+In assembly language, we didin't get any compile-time error. So, it's not easy to predict. 
+
+***
+
+# Indexed & Registered Indirect & Base-indexed
+
+## Indexed Addressing
+
+Only using array for global array references (Not used in Program # 5)
+
+```
+mov   edi, 0            ; high-level notation 
+mov   list[edi], eax    ; list[0]
+add   edi, 4      
+mov   list[edi], ebx    ; list[1]
+```
+
+We add the value in the [] to address of list.
+
+## Register Indirect Addressing
+
+Actual address of array element in register, used for referencing array elements in procedures.
+
+- In calling procedure
+
+```
+push   OFFSET list
+```
+
+- In called procedure
+
+```
+mov   esi, [ebp + 8]  ; get address of list into esi
+mov   eax, [esi]      ; get list[0] into eax
+add   esi, 4 
+add   eax, [esi]      ; add list[1] to eax
+add   esi, 16  
+mov   [esi], eax      ; send result to list[5]
+```
+
+## Base-Indexing
+
+Starting address in one register, offset in another; add and access memory. Used for referencing array elements in procedures.
+
+- In calling procedure
+
+```
+push   OFFSET list
+```
+
+- In called procedure
+
+```
+mov   edx, [ebp + 8]    ; get address of list into edx
+mov   ecx, 20      
+mov   eax, [edx + ecx]  ; get list[5] into eax
+mov   ebx, 4
+add   eax, [edx + ebx]  ; add list[1] to eax
+mov   [edx + ecx]. eax  ; send result in eax to list[5]
+```
+
+## Passing arrays by reference
+
+Suppose that an ArrayFill procedure fills an array with 32-bit integers
+
+The calling program passes the address of the array, along with count of the number of array elements.
+
+```
+COUNT = 100
+.data
+  list DWORD COUNT DUP(?)
+.code
+  ...
+  push OFFSET list
+  push COUNT
+  call ArrayFill
+```
+
+### Register indirect addressing
+
+eid points to the beginning of the array, so it's easy to use a loop to access each array element.
+
+```
+ArrayFill PROC
+  push ebp
+  mov ebp, esp
+  mov edi, [ebp + 12] ; @list in edi
+  mov ecx, [ebp + 8]  ; value of count in ecx
+more:
+  ; Code to generate a random number in eax gose here.
+  mov [edi], eax      ; put value into array
+  add edi, 4          ; increment start pointer by 4
+  loop more
+
+  pop ebp
+  ret 8
+ArrayFill ENDP
+```
+
+### Base Indexing
+
+```
+ArrayFill PROC
+  pushad                  ; save all registers
+  mov  ebp, esp
+  mov  edx, [ebp + 40]    ; @list in edx
+  mov  ebx, 0             ; "index" in ebx
+  mov  ecx, [ebp + 36]    ; value of count in ecx
+more:
+  ; Code to generate a random number in eax gose here.
+  mov [edx + ebx], eax      
+  add ebx, 4          
+  loop more
+
+  popad                   ; restore all registers
+  ret 8
+```
 
 ***
 
