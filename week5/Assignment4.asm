@@ -105,12 +105,25 @@ main PROC
   push  OFFSET random_arr  ; [ebp + 8]
   call  FillArray
 
-  ; Display the unsorted Array and marked then as blue
+  ; Display the unsorted Array and marked the color as Blue
   call  SetTextBlue
-  push  OFFSET  unsortedTitle ; [ebo + 16]
+  push  OFFSET  unsortedTitle ; [ebp + 16]
   push  userInput             ; [ebp + 12]
   push  OFFSET  random_arr    ; [ebp + 8]
   call  DisplayList         
+
+  ; Sort Array 
+  push userInput          ; [ebp + 12]
+  push OFFSET random_arr  ; [ebp + 8]
+  call SortList
+
+  ; Dispaly Median and marked the color as Green
+
+
+  ; Display the sorted Array and marked the color as Purple
+
+
+  ; Ask user for continue
 
 
 
@@ -259,20 +272,119 @@ FillArray ENDP
 SortList PROC
 ; Sort the list by the implementation of "Quick Sort"
 ; Pre conditions: push zero, filled array and UserInpur decreasement by 1. 
+; Receives: User input [ebp + 12] and Address of random number array [ebp + 8].
 ; Returns: A sorted array begins with the largest number.
 ;--------------------------------------------------------------------
-  ret
+    push      ebp
+    mov       ebp, esp
+    push      eax         ; Record the size of array
+    push      ebx         ; Record the high index starts at array size * 4
+    push      esi         ; Record the array Offset
+    push      edi         
+    push      ecx         ; Used to multify array size by 4
+
+    ; Build up the Registers for quickSortHelper 
+    ; eax, ebx, exc, esi
+    mov       esi, [ebp + 8]  ; Stored the array
+    mov       eax, [ebp + 12] ; Init the array Size
+    mov       ecx, 4
+    mul       ecx             ; Array Size * 4
+    mov       ecx, eax        ; ecx will now be the last addess of the array
+
+    xor       eax, eax        ; eax equals to low index starts at 0
+    mov       ebx, ecx        ; ebx equals to high index starts at arraySize * 4
+
+    call      QuickSortHelper
+
+    pop       ecx
+    pop       edi
+    pop       esi
+    pop       ebx
+    pop       eax
+    pop       ebp   
+
+    ret       8
 SortList ENDP
 
 
 ;--------------------------------------------------------------------
 QuickSortHelper PROC
 ; To sort an array in descending order
-; receiveds: Array's OFFSET [ebp + 8] and size or Array at [ebp + 12]
-; registers changed:
+; receiveds: eax- low index starts at 0 ecx- high index starts at last element 
+;            ebx- high index start at arraySize * 4  esi- OFFSET of array
 ; return: No return value. But the array has been sorted at this moment.
 ;--------------------------------------------------------------------
 
+  cmp eax, ebx            ; Compare the lowest and hieght index
+  jge End
+  
+  push  eax               
+  push  ebx
+  add   ebx, 4            ; high + 1
+
+  mov   edi, [esi + eax]  ; Set the lowIndex in the current array as the Pivot and stroed in edi
+
+Looping:
+  LowerIncrease:
+      add   eax, 4            ; low ++ (Since we put integers in the array, used 4)
+      cmp   eax, ebx          ; compare low and high
+      jge   EndOfLowerIncrease
+
+      cmp   [esi + eax], edi  ; Compare array[low] and Pivot (if less than pivot, do nothing)
+      jl    EndOfLowerIncrease
+      jmp   LowerIncrease     ; Keep finding the next element which need to be swap
+  EndOfLowerIncrease:
+
+  HigherDecrease:
+      sub   ebx, 4            ; end -- (Since we put integers in the array, used 4)
+      cmp   [esi + ebx], edi  ; Compare array[high] and Pivot (if larger than Pivot, do nothing )
+      jg    EndOfHigherDecrease
+      jmp   HigherDecrease    ; Keep finding the previous element which need to be swap
+  EndOfHigherDecrease:
+
+  cmp    eax, ebx             ; compare low and high
+  jge    EndOfLooping         ; No need to be swap
+
+  ; Swapping
+  push   [esi + eax]
+  push   [esi + ebx]
+  pop    [esi + eax]
+  pop    [esi + ebx]
+
+  jmp Looping
+
+EndOfLooping:
+  pop   ecx                   ; Restore Lower Index
+  pop   edi                   ; Restore Higher Index
+  
+  cmp   ecx, ebx              ; if lower index equal to our previous lower index 
+  je    EndOfSwap             ; No need to swap
+
+  ; Swapping lower index and privous lower index
+  push   [esi + ecx]
+  push   [esi + ebx]
+  pop    [esi + ecx]
+  pop    [esi + ebx]
+
+EndOfSwap:
+
+  mov    eax, ecx
+
+  push   edi
+  push   ebx
+
+  sub    ebx, 4
+
+  call  QuickSortHelper       ; Pass argument as array, lowIndex and previous lower index - 1
+
+  pop   eax
+  add   eax, 4
+
+  pop   ebx
+  call  QuickSortHelper       ; Pass arguemtn as array, highIndex and previous higher index + 1
+
+
+End:                      ; low index >= high index, end the sorting
   ret
 QuickSortHelper ENDP
 
