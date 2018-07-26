@@ -97,6 +97,21 @@ main PROC
   push  OFFSET  userInput ; [ebp + 8]
   call GetData
 
+  ; Fill random numbers into the Array
+  call  Randomize          ; Procedure provided by Irvine32
+  push  HI_RANGE           ; [ebp + 20]
+  push  LO_RANGE           ; [ebp + 16]
+  push  userInput          ; [ebp + 12]
+  push  OFFSET random_arr  ; [ebp + 8]
+  call  FillArray
+
+  ; Display the unsorted Array and marked then as blue
+  call  SetTextBlue
+  push  OFFSET  unsortedTitle ; [ebo + 16]
+  push  userInput             ; [ebp + 12]
+  push  OFFSET  random_arr    ; [ebp + 8]
+  call  DisplayList         
+
 
 
 	exit	; exit to operating system
@@ -195,22 +210,48 @@ GetData ENDP
 FillArray PROC
 ; Fill in the value in the array by the numbers generated from Randomize procedure
 ; Pre conditions: Push address of array and value of UserInput into stack
+; Receiveds: HI and LO of default Range to random numbers [ebp + 20] and [ebp + 16] 
+;            Value of user input [ebp + 12] and the Address of Array's first element [ebp + 8] 
 ; Returns: Need to use ebp combines esp as a counter to fill in the array.
 ;          Thus, procedure will return the filled array back.
 ;--------------------------------------------------------------------
 
-  ;; Set Stack Frame and Push Registers
-    ; push      ebp
-    ; mov       ebp, esp
-    ; push      eax
-    ; push      ebx
-    ; push      ecx
-    ; push      edx
-    ; push      esi
-    ; push      edi
+  ; Set Stack Frame and Push Registers
+    push      ebp
+    mov       ebp, esp
+    push      eax     
+    push      ebx   
+    push      ecx   ; Will be use as Counter from user input
+    push      edx   ; Hight Boundry
+    push      esi   ; Low Boundry
+    push      edi   ; Record the OFFSET of our random array
 
+  ; Build up the Loop
+    mov       ecx, [ebp + 12] ; User Input as Counter
+    mov       edi, [ebp + 8]  ; OFFSET of random number array
+    mov       edx, [ebp + 20] ; HI
+    inc       edx             ; Deal with the corner case
+    mov       esi, [ebp + 16] ; LO
+    sub       edx, esi        ; Get the difference between HI and LO and store in edx
+    mov       ebx, 0
 
-  ret
+Filling:
+    mov       eax, edx        ; Set the Range for randomRange procedure
+    call      randomRange
+    add       eax, esi          ; Modify the value at least larger than LO
+    mov       [edi + ebx], eax  ; Indexing by the ebx Register
+    add       ebx, 4            ; Increase 4 bit each time since we store the integer number
+    loop      Filling
+
+    pop       edi
+    pop       esi
+    pop       edx
+    pop       ecx
+    pop       ebx
+    pop       eax
+    pop       ebp
+    ret       16
+
 FillArray ENDP
 
 
@@ -248,17 +289,44 @@ DisplayMedian ENDP
 
 ;--------------------------------------------------------------------
 DisplayList PROC
-; 
+; Receives: Strings of displaying array [ebp + 16], user input as array size
+;           [ebp + 12] and Address of first element in random number array [ebp + 8]
 ; Pre conditions: push the values which need to be swap in both eax and ecx
 ;--------------------------------------------------------------------
-  ;; Set Stack Frame and Push Registers
-  ; push      ebp
-  ; mov       ebp, esp
-  ; push      esi
-  ; push      ecx
-  ; push      edx
+  ; Set Stack Frame and Push Registers
+  push      ebp
+  mov       ebp, esp
+  push      esi
+  push      ecx
+  push      edx
 
-  ret
+  mov       ecx, [ebp + 12] ; UserInput (Size)
+  mov       esi, [ebp + 8]  ; Random Number array
+  printString    [ebp + 16] ; Display Title
+  call CrLf
+  mov       edx, 1          ; Init the column
+
+Looping:
+  mov       eax, [esi]      ; Start looping through array
+  call      WriteDec
+  mov       eax, 9
+  call      WriteChar       ; Add a Space
+  add       esi, 4          ; Move to the next element in the array
+
+  cmp       edx, 10         ; Limit the displayed value in 10 columns
+  jl        ShowOnSameRaw
+  call      CrLf            ; Out of the Range, change LINE
+  mov       edx, 0          ; Init the column number
+
+  ShowOnSameRaw:
+  inc       edx             ; Increment the number of display column
+  loop      Looping         ; Looping until Count equal to 0
+
+  pop       edx
+  pop       ecx
+  pop       esi
+  pop       ebp
+  ret       12
 
 DisplayList ENDP
 
