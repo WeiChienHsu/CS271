@@ -1,10 +1,11 @@
-TITLE Program Assignment4 -  Composite Numbers Printer  (Assignment3.asm)
+TITLE Program Assignment4 -  Random Numbers Sorting  (Assignment4.asm)
 
 ; Author: Wei-Chien Hsu
-; Last Modified: 07/19/18
+; Last Modified: 07/26/18
 ; OSU email address: hsuweic@oregonstate.edu
 ; Course number/section: CS 271 Summer 2018
-; Assignment Number: Programming Assignment #3  Due Date: 07/24/18
+; Assignment Number: Programming Assignment #4  Due Date: 08/05/18
+;
 ; Get a user request in the range 10 to 200 and generate request random integers
 ; in range 100 to 999, stroing them in consecutive elements of an array.
 ; Display the list of integers "before sorting, 10 numbers per line."
@@ -57,7 +58,7 @@ intro_1   BYTE  " -- Sorting Random Numbers -- ", 0
 intro_2   BYTE  " -- Programmed by Wei-Chien Hus -- ", 0
 intro_3   BYTE  "This program generates a list of random numbers from 100 to 999, ", 0
 intro_4   BYTE  "displays the original list, sorted list, and calculates the median.", 0
-intor_EC1  BYTE  " Extra Credit :: Use a recursive sorting algorithm ", 0
+intor_EC1  BYTE  " Extra Credit :: Use a recursive sorting algorithm - Merge Sort ", 0
 intor_EC2  BYTE  " Extra Credit :: Implement the program using floating-point numbers and the floating-point processor ", 0
 intor_EC3  BYTE  " Extra Credit :: Created procedures to change text color and continue until user quits  ", 0
 
@@ -99,12 +100,10 @@ Redo:
   push  OFFSET  error_msg ; [ebp + 16]
   push  OFFSET  prompt    ; [ebp + 12]
   push  OFFSET  userInput ; [ebp + 8]
-  call GetData
+  call  GetData
 
   ; Fill random numbers into the Array
   call  Randomize          ; Procedure provided by Irvine32
-  ; push  LO_RANGE           ; [ebp + 20]
-  ; push  RANGE              ; [ebp + 16]
   push  userInput          ; [ebp + 12]
   push  OFFSET random_arr  ; [ebp + 8]
   call  FillArray
@@ -121,8 +120,7 @@ Redo:
   ; Sort Array 
   push userInput          ; [ebp + 12]
   push OFFSET random_arr  ; [ebp + 8]
-  ; call SortList
-  call Merge_Sort
+  call SortList
 
   ; Dispaly Median and marked the color as Green
   call  SetTextGreen
@@ -227,7 +225,7 @@ AskForUser:
   printString [ebp + 12] ; prompt
   call readInt           ; Read User input and store into EAX Register
   call CrLf
-  cmp eax, MAX_INPUT ; Data Validation
+  cmp eax, MAX_INPUT      ; Data Validation
   jg   Invalid
   cmp eax, MIN_INPUT
   jge  Valid
@@ -253,57 +251,46 @@ GetData ENDP
 FillArray PROC
 ; Fill in the value in the array by the numbers generated from Randomize procedure
 ; Pre conditions: Push address of array and value of UserInput into stack
-; Receiveds: HI and LO of default Range to random numbers [ebp + 16] and [ebp + 20] 
-;            Value of user input [ebp + 12] and the Address of Array's first element [ebp + 8] 
+; Receiveds: Value of user input [ebp + 12] and the Address of Array's first element [ebp + 8] 
 ; Returns: Need to use ebp combines esp as a counter to fill in the array.
 ;          Thus, procedure will return the filled array back.
 ;--------------------------------------------------------------------
 
-  ; Set Stack Frame and Push Registers
+  ;; Set Stack Frame and Push Registers
     push ebp
-    mov ebp,esp ;set up stack frame
-
-    ;//save callers registers
+    mov ebp,esp 
     push eax
     push ecx
     push edi
+    mov ecx, [ebp + 12]   ; User Input
+    mov edi, [ebp + 8]    ; Random Numbers Array
 
-
-    ;//retrive paramaters
-    mov ecx, [ebp+12]   ;num to generate
-    mov edi, [ebp+8]    ;array adress
-
-next_random:
-
-    ;///generate random in range and adjust
+GetNextRandomNumber:
     mov eax, RANGE
     call RandomRange
-    add eax, LO_RANGE
+    add eax, LO_RANGE     ; Generate the number by adding LOW limitation
     
-    ;//store result
-    mov WORD PTR [edi], ax
+    mov WORD PTR [edi], ax ; store the result
     add edi, 2
+    loop GetNextRandomNumber  ; Loop until counter equal to 0
 
-    loop next_random
-
-
-    ;//restore callers registers
     pop edi
     pop ecx
     pop eax
-
-    pop ebp     ;restore callers stack frame
-    Ret 8
+    pop ebp   
+    ret 8
 FillArray ENDP
 
-
-
-
-Merge_Sort PROC
+;--------------------------------------------------------------------
+SortList PROC
+; Implementaion of Merge Sort, split the array to left and right and 
+; sort them seperately. Store them in a temporary array in ordered and
+; move the result into our pushed array in the stack.
+; Receives: Value of array size [ebp + 12] and Random numbers array [ebp + 8]
+;--------------------------------------------------------------------
+    ;; Set Stack Frame and Push Registers
     push ebp
-    mov ebp,esp ;set up stack frame
-    
-    ;//save callers registers
+    mov ebp,esp 
     push edi
     push esi
     push edx
@@ -311,169 +298,152 @@ Merge_Sort PROC
     push eax
     push ebx
 
-    ;//////base cases////////////////
-    mov dx, [ebp+12]
-    ;//if only one element return
-    cmp dx, 1
-    je base_case_return
+  
+    mov dx, [ebp + 12]  ; User Input (Array Size)
+    cmp dx, 1           ; When the last Merge Sort called only has one element
+    je BaseCase
 
-    ;//if onlt 2 elements exchange and return
+    ; if onlt 2 elements exchange and return
     cmp dx, 2
-    jne recursive_case
+    jne CreateAndFillTempArray
 
-    ;//check if exchange needed
-    mov esi, DWORD PTR [ebp+8]
+    mov esi, DWORD PTR [ebp + 8]
     mov bx, word ptr [esi]
-    cmp bx, word ptr [esi+ TYPE WORD]
-    ja base_case_return
+    cmp bx, word ptr [esi+ TYPE WORD] ; Compare Previous value and Next Value
+    ja BaseCase                       ; No need to Swap
     
-    push esi
+    push esi                ; Previous Index [ebp + 8]
     add esi, TYPE WORD
-    push esi
-    call exchange
+    push esi                ; Next Index  [ebo + 12]
+    call Swap
 
-    jmp base_case_return
+    jmp BaseCase
 
-recursive_case:
-    ;create and fill temporary array
-	sub esp, DWORD PTR [ebp+12]
-    sub esp, DWORD PTR [ebp+12]
-    mov esi, DWORD PTR [ebp+8]
+  CreateAndFillTempArray:
+	  sub esp, DWORD PTR [ebp + 12]
+    sub esp, DWORD PTR [ebp + 12]
+    mov esi, DWORD PTR [ebp + 8]
     mov edi, esp
 
     cld
-    mov ecx, DWORD PTR [ebp+12]
+    mov ecx, DWORD PTR [ebp + 12]
     rep movsw
 
 
-    ;//LEFT Sort
+    ; Sort Left
     mov esi, esp
-    mov edx, DWORD PTR [ebp+12]
+    mov edx, DWORD PTR [ebp + 12]
     shr edx, 1
     push edx
     push esi
-    call Merge_Sort
+    call SortList
 
 
-    ;//RIGHT Sort
-    mov ecx, DWORD PTR [ebp+12]
-    and ecx, 0FFFFFFFEh              ;//clear LSB
+    ; Sort Right
+    mov ecx, DWORD PTR [ebp + 12]
+    and ecx, 0FFFFFFFEh             ; clear LSB
     add ecx, esp
 
-    mov edx, DWORD PTR [ebp+12]
+    mov edx, DWORD PTR [ebp + 12]
     shr edx, 1
-    jc odd_num
-    jmp even_num
-odd_num:    
+    jc isOdd
+    jmp isEven
+
+isOdd:    
     inc edx
-even_num:
+
+isEven:
     push edx
     push ecx
-    call Merge_Sort
+    call SortList
 
 
-    ;///merge sorted lists
-    ;//ecx points to mid list and will serve as sentinal for left
-    ;//edx will serve as alternate source pointer from right list
-    ;//eax will serve as sentinal for right list
-    mov eax, edi ;//currently pointing at just after list end
+    ; ecx points to mid list and will serve as sentinal for left
+    ; edx will serve as alternate source pointer from right list
+    ; eax will serve as sentinal for right list
+
+    mov eax, edi 
     mov edx, ecx
     mov esi, esp 
-    mov edi, DWORD PTR [ebp+8]
+    mov edi, DWORD PTR [ebp + 8]
     cld
 
-merge_next:
+Merge:
     cmp esi, ecx
-    je finish_right_list
+    je Sorted_Right
 
     cmp edx, eax
-    je finish_left_list
+    je Sorted_Left
 
     mov bx, word ptr [esi]
     cmp bx, [edx]
 
-    ja add_from_left
+    ja AppendFromLeft
 
-add_from_right:
+AppendFromRight:
     xchg edx, esi
     movsw
     xchg edx, esi
-    jmp merge_next
+    jmp Merge               ; Append right part to the temp array
 
-add_from_left:
+AppendFromLeft:
     movsw
-    jmp merge_next
+    jmp Merge                 ; Append left part to the temp array
 
-finish_right_list:
+Sorted_Right:
     mov ecx, eax
-    mov esi, edx
+    mov esi, edx              ; Sort right side
 
-finish_left_list:
-    sub ecx, esi
+Sorted_Left:
+    sub ecx, esi              ; Sort left side
     shr ecx, 1
     rep movsw
 
-
-return:    
-	
-    ;free temporary array
-    add esp, DWORD PTR [ebp+12]	   
-    add esp, DWORD PTR [ebp+12]
+RemoveTempArray:    
+    add esp, DWORD PTR [ebp + 12]	   
+    add esp, DWORD PTR [ebp + 12]
 
 
-base_case_return:
-    ;//restore callers registers
+BaseCase:
+    ; End the sorting Procese
     pop ebx
     pop eax
     pop ecx
     pop edx
     pop esi
     pop edi
-
-    pop ebp      ;restore callers stack frame
-    
+    pop ebp    
     ret 8
-Merge_Sort ENDP
+SortList ENDP
 
-;#################################################
-;PROCEDURE:      exchange
-;
-;Purpose:   to exchange two array items
-;Recieves:  the adress of two WORD values
-;Returns:   swaps these valus
-;
-;#################################################
-exchange PROC
+
+;--------------------------------------------------------------------
+Swap PROC
+; Swap two different vlaues from stack [ebp + 8] and [ebp + 12]
+;--------------------------------------------------------------------
     push ebp
-    mov ebp,esp ;set up stack frame
-
-    ;//save callers registers
+    mov ebp,esp 
     push eax
     push ebx
     push esi
     push edi
 
-    ;//retrive paramaters
-    mov esi, DWORD PTR [ebp + 8]
-    mov edi, DWORD PTR [ebp + 12]
+    mov esi, DWORD PTR [ebp + 8]    ; First Index
+    mov edi, DWORD PTR [ebp + 12]   ; Second Index
 
-    ;//load pointed to values into registers
-    mov ax, WORD PTR [esi]
+    mov ax, WORD PTR [esi]  ; Make a temperory variable
     mov bx, WORD PTR [edi]
 
-    ;//move values into alternate memory locations
-    mov [esi], bx
+    mov [esi], bx           ; Assign the exchanged value
     mov [edi], ax
 
-    ;//restore callers registers
     pop edi
     pop esi
     pop ebx
     pop eax
-
-    pop ebp     ;restore callers stack frame
+    pop ebp  
     Ret 8
-exchange ENDP
+Swap ENDP
 
 
 
@@ -482,56 +452,41 @@ DisplayMedian PROC
 ; Determines median of array and print it out
 ; Pre conditions: push User Input and Sorted Array.
 ;--------------------------------------------------------------------
-     push ebp
-    mov ebp,esp ;set up stack frame
-
-    ;//save callers registers
+    push ebp
+    mov ebp,esp 
     push eax
     push ecx
     push edx
     push esi
 
-    ;//retrive paramaters
-    mov ecx, [ebp+12]   ;num values requested
-    mov esi, [ebp+8]    ;array adress
+    mov ecx, [ebp + 12]   ; UserInput
+    mov esi, [ebp + 8]    ; OFFSET of random numbers array
 
-    call crlf
-    mov edx, [ebp + 16]
-    call WriteString
+    PrintString [ebp + 16]   ; Output title
 
 
-    ;////////////MEDIAN ALGORITHM////////////////////////////
-    ;// as the array is made up of 2 byte WORDs the 
-    ;// array adress + request (num elements in the array)
-    ;// will be pointing to
-    ;// ODD NUM ELEMENTS:   median adress + 1 BYTE
-    ;// EVEN NUM ELEMENTS:  first element of second half
-    ;// BTR is used to test and clear least signifigant bit
-    ;////////////////////////////////////////////////////////
+    ; ODD NUM ELEMENTS:   median adress + 1 BYTE
+    ; EVEN NUM ELEMENTS:  first element of second half
 
-    ;///find median/////
     btr ecx, 0
-    jc odd_num_elements
+    jc isOdd
 
-    ;//average two middle elements
     movzx eax, WORD PTR [esi + ecx ]
     add ax, WORD PTR [esi + ecx - TYPE WORD]
-    shr eax, 1  ;div by 2 to find average
-    jc round_up ;carry bit indicates result of xx.5
-    jmp display_result
+    shr eax, 1              ;div by 2 to find average
+    jc  Round               ;carry bit indicates result of xx.5
+    jmp Result
 
-round_up:
+Round:
     inc eax
-    jmp display_result
+    jmp Result
 
-odd_num_elements:
+isOdd:
     movzx eax, WORD PTR [esi + ecx]
 
-display_result:
+Result:
     call WriteDec
     call crlf
-
-    ;//restore callers registers
     pop esi
     pop edx
     pop ecx
@@ -547,64 +502,53 @@ DisplayList PROC
 ;           [ebp + 12] and Address of first element in random number array [ebp + 8]
 ; Pre conditions: push the values which need to be swap in both eax and ecx
 ;--------------------------------------------------------------------
-  ; Set Stack Frame and Push Registers
+  ;; Set Stack Frame and Push Registers
     push ebp
-    mov ebp,esp ;set up stack frame
-
-    ;//save callers registers
+    mov ebp,esp 
     push eax
     push ecx
     push esi
     push edx
     push ebx
 
-    ;//retrive paramaters
-    mov edx, [ebp+16]   ;adress of string
-    mov ecx, [ebp+12]   ;num values requested
-    mov esi, [ebp+8]    ;array adress
+    mov ecx, [ebp + 12]   ; num values requested
+    mov esi, [ebp + 8]    ; array adress
+    PrintString [ebp + 16]
 
-    ;//display title
-    call crlf
-    call WriteString
+    mov ebx, 10           ; Number in each Raw
 
-    mov ebx, 10
+GetNextNumber:
 
-display_next_number:
-
-    ;//display number
     movzx eax, WORD PTR [esi]
     call WriteDec
 
-    ;//add spaces
     push ecx
-    mov ecx, 4
+    mov ecx, 4             ; Space added 4 times
     mov al, ' '
-    space: call WriteChar
+
+    space: 
+    call WriteChar
     loop space
     pop ecx
 
     dec ebx
-    jz return_line      ;numbers per line reached
-    jmp no_return_line  ;else
+    jz RenewLine        ; numbers per line reached
+    jmp NoNeedForNewLine  ; else
 
-return_line:
-    call crlf
-    mov ebx, 10    ;reset numbers line count
-no_return_line:
+  RenewLine:
+    call crlf      ; Change Line
+    mov ebx, 10    ; reset numbers line count
 
+  NoNeedForNewLine:
     add esi, 2
+    loop GetNextNumber
 
-    loop display_next_number
-
-
-    ;//restore callers registers
     pop ebx
     pop edx
     pop esi
     pop ecx
     pop eax
-
-    pop ebp     ;restore callers stack frame
+    pop ebp     
     Ret 12
 DisplayList ENDP
 
