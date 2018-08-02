@@ -104,6 +104,8 @@ Redo:
 
   ; Fill random numbers into the Array
   call  Randomize          ; Procedure provided by Irvine32
+  push  RANGE              ; [ebp + 20]
+  push  LO_RANGE           ; [ebp + 16]
   push  userInput          ; [ebp + 12]
   push  OFFSET random_arr  ; [ebp + 8]
   call  FillArray
@@ -252,6 +254,7 @@ FillArray PROC
 ; Fill in the value in the array by the numbers generated from Randomize procedure
 ; Pre conditions: Push address of array and value of UserInput into stack
 ; Receiveds: Value of user input [ebp + 12] and the Address of Array's first element [ebp + 8] 
+;            Pass the global variables LO_Range and Range into Stack as well.
 ; Returns: Need to use ebp combines esp as a counter to fill in the array.
 ;          Thus, procedure will return the filled array back.
 ;--------------------------------------------------------------------
@@ -266,9 +269,9 @@ FillArray PROC
     mov edi, [ebp + 8]    ; Random Numbers Array
 
 GetNextRandomNumber:
-    mov eax, RANGE
+    mov eax, [ebp + 20]
     call RandomRange
-    add eax, LO_RANGE     ; Generate the number by adding LOW limitation
+    add eax, [ebp + 16]     ; Generate the number by adding LOW limitation
     
     mov WORD PTR [edi], ax ; store the result
     add edi, 2
@@ -278,7 +281,7 @@ GetNextRandomNumber:
     pop ecx
     pop eax
     pop ebp   
-    ret 8
+    ret 16
 FillArray ENDP
 
 ;--------------------------------------------------------------------
