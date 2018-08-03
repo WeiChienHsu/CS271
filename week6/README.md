@@ -1,2 +1,174 @@
 # MASM Data-Related Operators and the IA-32 Floating Point Unit
 
+## Data-Related Operators
+
+### OFFSET Operator
+- OFFSET returns the distance in bytes, of a label from the beginning of its enclosing segment.
+- The operating system adds the segment address. (from the segment register)
+
+Assume that the data segment begins at 00404000h.
+
+```
+.data
+bVal  BYTE  ?
+wVal  WORD  ?
+dVal  DWORD ?
+dVal2 DWORD ?
+
+.code
+...
+mov esi, OFFSET bVal  ; ESI = 00404000 the beginning of bVal -> First element
+mov esi, OFFSET wVal  ; ESI = 00404001
+mov esi, OFFSET dVal  ; ESI = 00404003
+mov esi, OFFSET dVal  ; ESI = 00404007
+```
+
+### PTR Operator
+- Override the default type of a label (variable)
+- Provides the flexibility to access part of a variable.
+
+```
+.data
+myDouble DWORD  12345678h
+.code
+...
+mov ax, myDouble  ; error : Size mismatch
+
+mov ax, WORD PTR myDouble   ; loads 5678h (Will match the SIZE of WORD)
+
+mov WORD PTR myDouble, 1357h ; saves 1357h
+```
+
+Recall that little endian order is used when storing data in memory.
+
+In memory: 78h | 56h | 34h | 12h
+
+```
+mov al, BTYE PTR myDouble       ; AL = 78h
+mov al, BYTE PTR [myDouble + 1] ; AL = 56h
+mov al, BYTE PTR [myDouble + 2] ; AL = 34h
+mov ax, WORD PTR myDouble       ; AL = 5678h
+mov ax, WORD PTR [myDouble + 2] ; AL = 1234h
+```
+
+- PTR can also be used to combine elements of a smaller data type and move them into a larger operand. The IA-32 CPU will automatically reverse the bytes.
+
+```
+.data
+myBytes BYTE  12h, 34h, 56h, 78n 
+; Notice the array declaration: Specify a comma-separated list of element values
+.code
+mov ax, WORD PTR  myBytes             ; AX = 3412h
+mov ax, WORD PTR  [myBytes + 2]       ; AX = 7856h
+mov eax, DWORD PTR  myBytes           ; EAX = 78563412h
+```
+
+### TYPE Operator
+
+The TYPE operator returns the size, in bytes, of a single element of a data declaration.
+
+```
+.data
+var1  BYTE ?
+var2  WORD ?
+var3  DWORD ?
+var4  QWORD ?
+
+.code
+
+mov eax, TYPE var1 ; 1
+mov eax, TYPE var2 ; 2
+mov eax, TYPE var3 ; 4
+mov eax, TYPE var4 ; 8
+```
+
+### LENGTHOF Operator
+- Counts the number of elements in a single data declaration.
+
+```
+.data
+byte1 BYTE 10, 20, 30         ; 3
+list1 WORD 30 DUP(?)          ; 30
+list2 DWORD 30 DUP(?)         ; 30
+list3 DWORD 1, 2, 3, 4        ; 4
+digitStr  BYTE  "1234567", 0  ; 8
+
+.code
+mov ecx, LENGTHOF list1       ; ecx contains 30
+```
+
+### SIZEOF Operator
+- Returns a value that is equivalent to multiplying LENGTHOG by TYPE 
+
+```
+.data
+byte1 BYTE 10, 20, 30         ; 3
+list1 WORD 30 DUP(?)          ; 60
+list2 DWORD 30 DUP(?)         ; 120
+list3 DWORD 1, 2, 3, 4        ; 16
+digitStr  BYTE  "1234567", 0  ; 8
+
+.code
+mov ecx, LENGTHOF list1       ; ecx contains 60
+```
+
+***
+
+## Index Scaling
+
+```
+.data
+listB BYTE  1,2,3,4,5,6,7
+listW WORD  8,9,10,11,12,13
+listD DWORD 14,15,16,17,18,19,20,21
+.code
+mov esi, 5
+mov al, listB[esi * TYPE listB]   ; al = 6
+mov bx, listW[esi * TYPE listW]   ; bx = 13
+mov edx, listD[esi * TYPE listD]  ; edx = 19
+```
+
+## Pointers
+- We can declare a pointer variable that contains the offset of another varible
+
+```
+.data
+list    DWORD   100 DUP(?)
+ptr     DWORD   list
+.code
+mov esi, ptr
+mov eax, [esi]    ; EAX = @ list
+
+; We coudn't deference ptr directly
+
+```
+
+- Just Like what we didi in C/C++
+
+```c
+int list[100]
+int *ptr = list
+```
+
+## Summing an Integer Array
+The following code calculates the sum of an array of 32-bit integers(register indirect mode)
+
+
+```
+.data
+intList   DWORD   100h, 200h, 300h, 400h
+ptrD      DWORD   intList
+
+.code
+
+mov esi, ptrD               ; address of intList
+mov ecx, LENGTHOF intList   ; loop counter
+mov eax, 0                  ; init the accumulator
+
+L1: 
+  add eax, [esi]            ; add an integer
+  add esi, TYPE intList     ; point to the next integer
+  loop L1                   ; repeat until ECX = 0
+```
+
+***

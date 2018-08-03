@@ -36,3 +36,12 @@
 - Passing Parameters on the Stack
 - Introduction to Arrays
 - Displaying Arrays & Using Random Numbers
+
+
+[MASM Data-Related Operators and the IA-32 Floating Point Unit](https://github.com/WeiChienHsu/CS271/tree/master/week6)
+
+- Data-Related Operators
+- Multi-Dimensional Arrays and String Processing
+- Lower-Level Programming
+- Reverse Polish Notation
+- IA-32 Floating Point Unit
