@@ -172,3 +172,147 @@ L1:
 ```
 
 ***
+# Multi-Dimensional Arrays String Processing
+
+## 2 Dimensional Array (Matrix)
+
+```
+Matrix DWORD   5 DUP(3 DUP(?))  ; 15 elements
+```
+
+- A matrix is an arrays of arrays
+- Row major order: Row index first(5 rows, 3 columns)
+- Example HLL reference: Matrix[0][2]
+- In assembly language, it's just a set of contiguous memory locations 
+
+### Calculate the Address of 2D Array
+
+An element's address is calculated as the base address plus an offset
+
+```
+BaseAddress + elementSize + [(row# * elementsPerRow) + column#]
+```
+
+- Suppose Matrix is at address 20A0h
+- The address of Matrix[3][1] is at 20A0h + 4 * [3 * 3 + 1] = 20A0h + 40 = 20A0h + 28h = 20C8h
+
+
+|   | 0  | 1   | 2    |
+| 1 |20A0| 20A4| 20A8 |
+| 2 |20AC| 20B0| 20B4 |
+| 3 |20B8| 20BC| 20C0 |
+| 4 |20C4| 20C8| 20CC |
+
+***
+
+## String Primitives
+
+- A string is an array of BYTE
+- In most cases, an extra byte is needed for the zero-byte terminator
+- MASM has some "String primitives" for manipulating strings byte-by-byte
+
+```
+Most important:
+lodsb ; load string byte
+stosb ; store string byte
+cld   ; clear direction flag
+std   ; set direction flag
+```
+
+### lodsb
+- Move byte at [esi] into the AL register
+- Increments esi if direction flag is 0
+- Decrements esi if direction flag is 1
+
+### stosb
+- Moves byte in the AL register to memory at [edi]
+- Increments edi if direction flag is 0
+- Decrements edi if direction flag is 1
+
+### cld
+- Sets direction flag to 0
+- Causes esi and edi to be incremented by lodsb and stosb
+- Used for moving forward through an array
+
+### std
+- Sets direction flag to 1
+- Causes esi and edi to be decremented by lodsb and stosb
+- Used for moving backward through an array
+
+```
+INCLUDE Irvine32.inc
+MAXSIZE	= 100
+.data
+inString	BYTE		MAXSIZE DUP(?)		; User's string
+outString	BYTE		MAXSIZE DUP(?)		; User's string capitalized
+prompt1	BYTE		"Enter a string: ",0
+sLength	DWORD	0
+
+.code
+main PROC
+; Get user input:
+	mov	edx,OFFSET prompt1
+	call	WriteString
+	mov	edx,OFFSET inString
+	mov	ecx,MAXSIZE
+	call	ReadString
+	call	WriteString
+	call	CrLf
+	
+; Set up the loop counter, put the string addresses in the source 
+; and index registers, and clear the direction flag:
+	mov	sLength,eax
+	mov	ecx,eax
+	mov	esi,OFFSET inString
+	mov	edi,	OFFSET outString
+	cld
+
+; Check each character to determine if it is a lower-case letter.
+; If yes, change it to a capital letter.  Store all characters in
+; the converted string:
+counter:
+	lodsb
+	cmp	al,97	; 'a' is character 97
+	jb	notLC
+	cmp	al,122	; 'z' is character 122
+	ja	notLC
+	sub	al,32
+notLC:
+	stosb
+	loop	counter
+	
+; Display the converted string:
+	mov	edx,OFFSET outString
+	call	WriteString
+	call	CrLf
+	
+; Reverse the string
+	mov	ecx,sLength
+	mov	esi,OFFSET inString
+	add	esi,ecx
+	dec	esi					; last byte of inString
+	mov	edi,OFFSET outstring	; first byte of outString
+
+reverse:
+	std						; get characters from end to beginning
+	lodsb
+	cld						; store characters from beginning to end
+	stosb
+	loop	reverse
+
+; Display reversed string
+	mov	edx,OFFSET outString
+	call	WriteString
+	call	CrLf
+	
+	exit			;exit to operating system
+main ENDP
+
+END main
+```
+
+
+***
+
+
+***
