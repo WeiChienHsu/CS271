@@ -220,21 +220,34 @@ std   ; set direction flag
 ```
 
 ### lodsb
+
+esi 指向的 Adress 內 data 取出給 AL, ESI = ESI + 1
+
 - Move byte at [esi] into the AL register
 - Increments esi if direction flag is 0
 - Decrements esi if direction flag is 1
 
 ### stosb
+
+AL內的值取出，賦予 edi 指向的 Address, EDI = EDI + 1
+
 - Moves byte in the AL register to memory at [edi]
 - Increments edi if direction flag is 0
 - Decrements edi if direction flag is 1
 
 ### cld
+
+從頭到尾
+
 - Sets direction flag to 0
 - Causes esi and edi to be incremented by lodsb and stosb
 - Used for moving forward through an array
 
 ### std
+
+從尾到頭
+
+
 - Sets direction flag to 1
 - Causes esi and edi to be decremented by lodsb and stosb
 - Used for moving backward through an array
@@ -311,8 +324,206 @@ main ENDP
 END main
 ```
 
+***
+
+## Lower-Level Programming
+
+All keyboard input is character
+- Digits are character codes 48 - 57
+- '0' is character number 48
+- '1' is 49 ... '9' is 57
+
+Cannot do arithmetic with string representations.
+
+### ReadString (Irvine's Library)
+- Get a string of digits(characters)
+- Converts digits to numeric values.
+
+### ReadString Implementaion 
+```
+get string
+x = 0
+for k = 0 to (len(str) - 1)
+  if 48 <= str[k] <= 57
+    x = 10 * x + (str[k] - 48)
+  else
+    break
+```
+
+```
+"2475", 0
+
+x = 0
+
+ch '2' : value 50, x = 2
+ch '4' : value 52, x = 24
+ch '7' : value 55, x = 247
+ch '5' : value 53, x = 2475
+```
 
 ***
 
+# Reverse Polish Notation (RPN) Expression Evaluation
 
+```
+Infix : a + (b-c) * (d+e)
+Postfix (RPN): a bc-  de+ * +
+```
+
+- Notice how operator precedence is preserved
+- Notice how order of operands is preserved
+- Notice how order of operators is NOT preserved
+- RPN does not require parentheses
+
+
+## Conversion infix -> Postfix(RPN) 
+
+### Binary Tree Method
+- Fully parenthesize infix
+- Dont parenthesize postfix
+- Operands: are always in the original order
+- Operators: may apprear in different order
+
+### Pare the expression left to right constructing a binary Tree
+- ( : go left
+- Operand : insert
+- Operator : go up, insert, go right
+- ) : go up
+- Post-order traversal gives RPN
+
+
+### Example ((a+b) * (c+d)) + e -> ab+cd+*e+
+
+```
+          [+]
+          /  \
+       [*]   [e]
+      /    \
+    [+]    [+]
+   /  \    / \
+ [a]  [b][c]  [d]
+
+Post-Order Traversal:
+
+      ab+ cd+ * e +
+```
+
+## Conversion Postfix(RPN)  -> infix
+
+### Binary Tree Method
+- Diagram expression as a binary tree (Last operator is root)
+- Do inorder traversal, parenthesizing each subtree
+
+```
+          [+]
+          /  \
+       [*]   [e]
+      /    \
+    [+]    [+]
+   /  \    / \
+ [a]  [b][c]  [d]
+
+((a + b) * (c + d)) + e
+
+```
+## Evaluation of RPN expressions
+Parse expression left to right, creating a stack of operands
+- Operand: Push onto stack
+- Operator: Pop 2 operands, perform operation, push result onto stack
+- The single value remaining on the stack is valeu of expression
+
+## Using RPN in programs : a - b * c
+1. Convert to RPN : abc *-
+2. Program:
+
+```
+push a
+push b
+push c
+mul 
+sub
+```
 ***
+
+# Floating-Point Unit
+
+- Runs in parallel with integer processor.
+- Circuits designed for fast computation on floating point numbers. (IEEE format)
+- Registers implemented as "pushdown" Stack (One register pushed will influce others)
+- Usually programmed as a 0-address machine 
+- CPU/FPU Exchange data though memory (Converts WORD and DWORD to REAL10)
+
+## Floating-Point Unit Registers (80-bit Register)
+- 0: IEEE 754 format
+- 1: bit #79: sign bit
+- 2: bit #78 - #64: biased exponent
+- 3: bit #63 - #0: normalized mantissa
+
+- If push more than 8 values, the bottom of the stack will be lost.
+- Operations are defined for the top one or two registers
+- Registers may be referenced by name ST(x)
+
+## Programming the FPU
+- FPU Registers = ST(0) ... ST(7)
+- ST = ST(0) = top of stack
+- ST(0) is implied when an poerand is not specifid.
+- Instruction Format: OPCODE destination, source
+- Restrictions: One register must be ST(0)
+- FINIT: initialize FPU register stack (Execute before any other FPU instructions)
+
+## Sample Register Stack Opcodes
+### FLD MemVar
+- Push ST(i) down to ST(i + 1) for i = 0 - 6
+- Load ST(0) with MemVar
+
+### FST MemVar
+- Move top of stack to memory
+- Leave result in ST(0)
+
+### FSTP MemVar
+- Pop top of stack to memory
+- Move ST(i) up to ST(i - 1) for i = 1 - 7
+
+```
+.data
+varX    REAL10   2.5
+varY    REAL10   -1.8
+varZ    REAL10   0.9
+result  REAL10    ?
+
+.code
+  FINT
+  FLD varX
+  FLD varY
+  FLD varZ
+  FMUL
+  FADD
+  FSTP result ;   result = varX + varY * varZ
+```
+
+### Example (6.0 * 2.0) + (4.5 * 3.2) 
+RPN is 6.0 2.0 * 4.5 3.2 * +
+
+```
+.data
+array       REAL10  6.0, 2.0, 4.5, 3.2
+dotProduct  REAL10  ?
+
+main PROC
+  finit             ; Initialize FPU
+  fld array         ; push 6.0 onto the stack
+  fld array + 10    ; push 2.0 onto the stack
+  fmul              ; ST(0) = 6.0 * 2.0
+  fld array + 20    ; push 4.5 onto the stack
+  fld array + 30    ; push 3.2 onto the stack
+  fmul              ; ST(0) = 4.5 * 3.2
+  fadd              ; ST(0) = ST(0) + ST(1)
+  fstp dotProduct   ; pop Stack into memory
+  exit
+
+
+min ENDP
+END main
+
+```
+
