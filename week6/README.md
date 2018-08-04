@@ -198,10 +198,10 @@ BaseAddress + elementSize + [(row# * elementsPerRow) + column#]
 
 
 |   | 0  | 1   | 2    |
-| 1 |20A0| 20A4| 20A8 |
-| 2 |20AC| 20B0| 20B4 |
-| 3 |20B8| 20BC| 20C0 |
-| 4 |20C4| 20C8| 20CC |
+| 0 |20A0| 20A4| 20A8 |
+| 1 |20AC| 20B0| 20B4 |
+| 2 |20B8| 20BC| 20C0 |
+| 3 |20C4| 20C8| 20CC |
 
 ***
 
@@ -526,4 +526,120 @@ min ENDP
 END main
 
 ```
+
+***
+
+## Summary Exercise
+
+### Match the string primitive to its purpose
+Load String byte: lodsb
+Store String byte: stosb
+Clear Direction flag: cld
+Set Direction flag; std
+
+
+### For the following segment, what is SIZEOF myChecker
+
+```
+.data
+myChecker   BYTE   12h
+            BYTE   34h
+            BYTE   56h
+            BYTE   78h
+            BYTE   90h
+```
+
+1.000
+
+
+### The _________ operator returns the size, in bytes, of a single element of a data declaration.
+
+TYPE
+
+
+### The _________ operator returns a count of the number of elements in a single data declaration.
+
+LENGTHOF
+
+
+### Storing a string byte using string primitives increments/decrements which register?
+
+EDI
+
+### Suppose that you are given the following partial data segment, which starts at address offset 0x1000 :
+
+```
+.data
+idArray WORD 3546, 1534, 12, 3481, 154, 6423
+x DWORD LENGTHOF idArray
+y DWORD SIZEOF idArray
+z DWORD TYPE idArray
+```
+
+- x contains: 6
+- y contains: 6 * 4 = 24
+- What is the hexadecimal OFFSET of the number 12 in idArray: 0x1004
+
+### Suppose that you are given the following partial data segment, which starts at address 0x0700 :
+
+```
+.data
+idArray DWORD 1800, 1719, 1638, 1557, 1476, 1395, 1314, 1233, 1152, 1071, 990
+u DWORD LENGTHOF idArray
+v DWORD SIZEOF idArray
+```
+
+What value does EAX contain after the following code has executed? 
+
+```
+mov   esi, OFFSET idArray
+mov   eax, [esi+8*TYPE idArray]
+```
+
+1152 (找第八個 index - 0 開始)
+
+### Assume that your program has access to the following data segment (starting at address 0x310):
+```
+.data
+id       DWORD  7
+matrix   WORD   50 DUP(10 DUP(?))
+```
+
+What is the hexadecimal address of matrix[7][3] (the 4th element of the 8th row)?
+
+- 0x3A6
+
+
+### Given the following array declaration, how many bytes of memory does array matrix require? 
+```
+.data
+matrix   WORD   7 DUP(15 DUP(?))
+```
+- 7 * 2 * 15 = 210
+
+
+### (5 + 3) * 12 / (3 * 4) + 12
+5 3 + 12 * 3 4 * / 12 + 
+
+### 3 3 * 5 4 2 * / -
+3 * 3 - 5 / (4 * 2) 
+
+
+### Which of the following infix notations corresponds to the given FPU manipulations? A B / C D - * E -
+
+```
+finit
+fld    A
+fld    B
+fdiv
+fld    C
+fld    D
+fsub
+fmul
+fld    E
+fsub
+fstp   Z
+```
+
+ Y = A / B * (C - D) - E 
 
