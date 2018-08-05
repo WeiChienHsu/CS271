@@ -44,12 +44,18 @@ TITLE Program Assignment5 OptionA -  low-level I/O procedures  (Assignment5.asm)
 
 INCLUDE Irvine32.inc
 
-ARRAY_SIZE = 10
+HIGHTEST   EQU  4294967286
+MAX_STRING EQU  15
+INPUT_SIZE EQU  10
+MAX_ASCII  EQU  57
+MIN_ASCII  EQU  48
 
 ;---------------------------------------------
 ;
 ;
 ;---------------------------------------------
-DisplayString Macro
+DisplayString macro 
+
+
 
 END main
