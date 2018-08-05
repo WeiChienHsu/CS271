@@ -54,7 +54,31 @@ MIN_ASCII  EQU  48
 ;
 ;
 ;---------------------------------------------
-DisplayString macro 
+DisplayString MACRO stringMessage 
+
+
+ENDM
+
+;---------------------------------------------
+;
+;
+;---------------------------------------------
+GetString MACRO stringPrompt, stringAddress 
+
+
+ENDM
+
+
+.data
+
+
+
+.code
+
+  main PROC
+
+  main ENDP
+
 
 
 
