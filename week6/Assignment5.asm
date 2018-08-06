@@ -87,8 +87,8 @@ intro_1           BYTE  "- Design low level I/O procedures -", 0
 intro_2           BYTE  "- Programed by Wei-Chien Hsu -", 0
 intro_3           BYTE  "Please provide 10 unsigned decimal integers which is fit in 32 bit register.", 0
 intro_4           BYTE  "The Program will display the integers, their sum and average value. ", 0
-intro_EC          BYTE  "**Extra Credit 1:: number each line of user input and display a running subtotal of the user’s numbers.", 0
-intro_EC          BYTE  "**Extra Credit 3:: make your ReadVal and WriteVal procedures recursive.", 0
+intro_EC1         BYTE  "**Extra Credit 1:: number each line of user input and display a running subtotal of the user’s numbers.", 0
+intro_EC2         BYTE  "**Extra Credit 3:: make your ReadVal and WriteVal procedures recursive.", 0
 
 prompt            BYTE  "Please ENTER an unsigned integer: ", 0
 error_message     BYTE  "The number you ENTERED was not an unsigned integer or it was too large.", 0
@@ -113,6 +113,28 @@ Subtotal_number   SDWORD  0
 ; Main Procedure
 ;-------------------------------------------------------------------
 main PROC
+; Introduction
+  push    OFFSET  intro_EC2 ; ebp + 28
+  push    OFFSET  intro_EC2 ; ebp + 24
+  push    OFFSET  intro_4 ; ebp + 20
+  push    OFFSET  intro_3 ; ebp + 16
+  push    OFFSET  intro_2 ; ebp + 12
+  push    OFFSET  intro_1 ; ebp + 8
+  call    Introduction
+; User Input
+  push    count                     ; ebp + 36
+  push    ArraySize                 ; ebo + 32
+  push    OFFSET Subtotal_message   ; ebp + 28
+  push    Subtotal_number           ; ebp + 24
+  push    OFFSET error_message      ; ebp + 20
+  push    OFFSET prompt             ; ebp + 16
+  push    OFFSET arr                ; ebp + 12
+  push    OFFSET UserInput          ; ebp + 8
+  call    readVal
+
+; Display the value
+
+
 
 main ENDP
 
@@ -124,7 +146,33 @@ main ENDP
 ; Registers Changed: None.
 ;-------------------------------------------------------------------
 Introduction PROC
+  push    ebp
+  mov     ebp, esp
+  push    edi
 
+  mov     edi, [ebp + 8]    ; Intro_1
+  DisplayString  edi     
+
+  mov     edi, [ebp + 12]   ; Intro_2
+  DisplayString  edi
+
+  mov     edi, [ebp + 16]   ; Intro_3
+  DisplayString  edi
+
+  mov     edi, [ebp + 20]   ; Intro_4
+  DisplayString  edi
+
+  mov     edi, [ebp + 24]   ; Intro_EC1
+  DisplayString  edi
+
+  mov     edi, [ebp + 28]   ; Intro_EC2
+  DisplayString  edi
+
+  call  CrLF
+  call  CrLF
+  pop   edi
+  pop   ebp
+  ret   24
 Introduction ENDP
 
 ;-------------------------------------------------------------------
@@ -135,7 +183,92 @@ Introduction ENDP
 ; Registers Changed: eax, ecx, edx, ebx
 ;-------------------------------------------------------------------
 ReadVal PROC
+  push  ebp
+  mov   ebp, esp
+  pushad
+  jmp   BeginStringVal
 
+InvalidStringVal:
+  displayString [ebp + 20] ; Display Error message
+
+BeginStringVal:
+  mov   ebx, [ebp + 32]    ; Check the Array Size
+  cmp   ebx, 0             ; If the Array Size met 0
+  je    EndStringVal       ; End the recursive procedure
+
+  mov   eax, [ebp + 36]    ; Count variable for tracking the subtotal
+  call  WriteDec
+  getString [ebp + 16], [ebp + 8] ; Used the prompt for asking user input and store the value
+  
+  cmp   eax, INPUT_SIZE    ; Check the count
+  jge   InvalidStringVal    
+
+  mov   ecx, eax           ; Set the length of String
+  mov   esi, [ebp + 8]     ; UserInput
+  mov   edi, [ebp + 12]    ; Array
+  mov   ebx, 10            ; 10 for conversion purpose
+  mov   edx, 0             ; Default EDX as 0
+  cld                      ; Set a flag for moving forward
+
+StringLoop:
+  lodsb
+  cmp     al, MAX_ASCII
+  jg      InvalidStringVal
+  cmp     al, MIN_ASCII
+  jl      InvalidStringVal
+
+  sub     al, 48            ; Convert into digit
+	movzx		eax, al					  ; extends to fill the size of SWODR
+	add			eax, edx				  ; Add the value in to current one
+	mul			ebx						    ; move forward by multipling by 10
+	mov			edx, eax				  ; store the value
+  loop    StringLoop
+
+  mov     eax, edx
+  mov     edx, 0
+  div     ebx
+
+  DisplayString   [ebp + 28]  ; Print the subtotal message
+  push    eax
+  add     [ebp + 24], eax     ; Add the current value into subtotal
+  mov     eax, [ebp + 24]     ; Move the new subtotal back to eax
+  mov     [ebp +  24], eax    ; Update the subtotal
+  call    WriteDec            ; Dusplay new Subtotal
+  call    CrLF
+  call    CrLF
+  pop     eax
+
+  ; Store the subtotal into array
+  push    eax                 ; ebp + 12  -> subtotal
+  push    edi                 ; ebp + 8 -> array
+  call    StoreInput
+
+  mov     ebx, [ebp + 32] ; After adding element into array
+  dec     ebx             ; Decrease the number of array size by 1
+  mov     [ebp + 32], ebx ; Update the array size in the stack
+
+  add     edi, 4          ; Move to the next element in the array
+  mov     eax, [ebp + 36] ; Increase the count variable
+  add     eax, 1
+  mov     [ebp + 36], eax
+
+  ; Push the current varaibles into the stack for recursive purpose
+  ; Need to push those variables in the same order
+
+  push    eax         ; count
+  push    ebx         ; Array Size
+  push    [ebp + 28]  ; Subtotal message
+  push    [ebp + 24]  ; Subtotal number
+  push    [ebp + 20]  ; Error message
+  push    [ebp + 16]  ; Prompt
+  push    edi         ; Array (Updated to the next element)
+  push    [ebp + 8]   ; UserInput
+  call    readVal 
+
+EndStringVal:
+  popad
+  pop ebp
+  ret 32
 ReadVal ENDP
 
 ;------------------------------------------------------------------
@@ -146,7 +279,17 @@ ReadVal ENDP
 ; Registers Changed: eax, edi
 ;------------------------------------------------------------------
 StoreInput PROC
+  push ebp
+  push ebp, esp
+  pushad
 
+  mov   edi, [ebp + 8]    ; array
+  mov   eax, [ebp + 12]   ; subtotal
+  mov   [edi], eax        ; Store the subtatal 
+
+  popad
+  pop ebp
+  ret 8
 StoreInput ENDP
 
 
@@ -158,6 +301,7 @@ StoreInput ENDP
 ; Registers Changed: eax, ebx, ecx, edx
 ;------------------------------------------------------------------
 WriteVal PROC
+
 
 WriteVal ENDP
 
