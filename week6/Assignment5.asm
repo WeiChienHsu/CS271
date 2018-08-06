@@ -90,7 +90,7 @@ intro_4           BYTE  "The Program will display the integers, their sum and av
 intro_EC1         BYTE  "**Extra Credit 1:: number each line of user input and display a running subtotal of the user’s numbers.", 0
 intro_EC2         BYTE  "**Extra Credit 3:: make your ReadVal and WriteVal procedures recursive.", 0
 
-prompt            BYTE  "Please ENTER an unsigned integer: ", 0
+prompt            BYTE  ". Please ENTER an unsigned integer: ", 0
 error_message     BYTE  "The number you ENTERED was not an unsigned integer or it was too large.", 0
 
 comma_sign        BYTE  ", ", 0
@@ -104,7 +104,7 @@ UserInput         BYTE  MAX_STRING DUP(?)
 CurrentNumber     BYTE  MAX_STRING DUP(?)
 ArraySize         SDWORD  10
 count             DWORD 1
-arr             SDWORD  10(DUP) ?
+arr               SDWORD  10 DUP(?)
 Subtotal_number   SDWORD  0
 
 
@@ -115,7 +115,7 @@ Subtotal_number   SDWORD  0
 main PROC
 ; Introduction
   push    OFFSET  intro_EC2 ; ebp + 28
-  push    OFFSET  intro_EC2 ; ebp + 24
+  push    OFFSET  intro_EC1 ; ebp + 24
   push    OFFSET  intro_4 ; ebp + 20
   push    OFFSET  intro_3 ; ebp + 16
   push    OFFSET  intro_2 ; ebp + 12
@@ -133,7 +133,7 @@ main PROC
   call    readVal
 
 ; Display the value
-  push    OFFSET  current           ; ebp + 24
+  push    OFFSET  CurrentNumber     ; ebp + 24
   push    OFFSET  UserInput_message ; ebp + 20
   push    OFFSET  comma_sign        ; ebp + 16
   push    LENGTHOF  arr             ; ebp + 12
@@ -141,7 +141,18 @@ main PROC
   call    WriteVal        
   
 ; Display the final results (sum and average)
+  push    OFFSET  CurrentNumber     ; ebp + 24
+  push    OFFSET  Average_message   ; ebp + 20
+  push    OFFSET  Sum_message       ; ebp + 16
+  push    OFFSET  arr               ; ebp + 12
+  push    Subtotal_number           ; ebp + 8
+  call    DisplaySumAndAvg
 
+
+  ; Farewell Bye
+  push    OFFSET goodbye            ; ebp + 8
+  call    Farewell
+  exit
 
 main ENDP
 
@@ -159,22 +170,27 @@ Introduction PROC
 
   mov     edi, [ebp + 8]    ; Intro_1
   DisplayString  edi     
+  call  CrLF
 
   mov     edi, [ebp + 12]   ; Intro_2
   DisplayString  edi
+  call  CrLF
 
   mov     edi, [ebp + 16]   ; Intro_3
   DisplayString  edi
+  call  CrLF
 
   mov     edi, [ebp + 20]   ; Intro_4
   DisplayString  edi
+  call  CrLF
 
   mov     edi, [ebp + 24]   ; Intro_EC1
   DisplayString  edi
+  call  CrLF
 
   mov     edi, [ebp + 28]   ; Intro_EC2
   DisplayString  edi
-
+  call  CrLF
   call  CrLF
   call  CrLF
   pop   edi
@@ -197,6 +213,7 @@ ReadVal PROC
 
 InvalidStringVal:
   displayString [ebp + 20] ; Display Error message
+  call CrLF
 
 BeginStringVal:
   mov   ebx, [ebp + 32]    ; Check the Array Size
@@ -287,7 +304,7 @@ ReadVal ENDP
 ;------------------------------------------------------------------
 StoreInput PROC
   push ebp
-  push ebp, esp
+  mov ebp, esp
   pushad
 
   mov   edi, [ebp + 8]    ; array
@@ -363,8 +380,42 @@ WriteVal ENDP
 ; Registers Changed: eax, ebx, ecx, edx, edi and ebp
 ;----------------------------------------------------------
 DisplaySumAndAvg PROC
-  
+  push  ebp
+  mov  ebp, esp
+  pushad
+  ; Display the sum of user input
+  call  CrLF
+  displayString [ebp + 16]  ; sum message
+  mov   eax, 10
+  mov   edx, 0
+  mov   ebx, 0
+  mov   ecx, eax            ; Counter sets for 10 times
+  mov   eax, 0
+  mov   edi, [ebp + 12]     ; array
 
+GetSum:
+  add eax, [edi]            ; Dereference the array and add into eax
+  add edi, 4                ; Increment the pointer for the next element in array
+  
+  loop GetSum               ; Display 10 times
+
+  push  [ebp + 24]          ; Current sum [ebp + 12]
+  push   eax                ; Current index [ebp + 8]
+  call   ConvertIntToString
+
+  call CrLF
+
+  DisplayString [ebp + 20]  ; Display average message
+  mov   ebx, 10
+  div   ebx
+
+  push  [ebp + 24]
+  push  eax
+  call   ConvertIntToString
+
+  popad
+  pop   ebp
+  ret   20
 DisplaySumAndAvg ENDP
 
 
@@ -376,6 +427,46 @@ DisplaySumAndAvg ENDP
 ; Registers Changed: eax, ebx, ecx, edi and edp
 ;---------------------------------------------
 ConvertIntToString PROC
+	push	ebp
+	mov		ebp, esp
+	pushad
+	mov		ecx, 0				  
+	mov		eax, [ebp + 8]		; current
+	mov		edi, [ebp + 12]	  ; sum
+
+ToEngDigit:
+  mov		edx, 0			
+	mov		ebx, 10
+	div		ebx           ; Round the number to integer
+	cmp		eax, 0
+	je		EndDigit			; Meet the last element in array
+	add		ecx, 1  
+	jmp		ToEngDigit
+
+EndDigit:
+	add		ecx, 1				; Increments last digit and places null terminator
+	add		edi, ecx
+	std
+	mov		eax, 0
+	mov		al,	0				  ; terminates string with null
+	stosb
+	mov		eax, [ebp + 8]	
+
+DigitString:
+	mov		edx, 0			
+	div		ebx					  ; remaind to take next digit
+	add		edx, 48				; adds 48 to set to ASCII
+	push	eax					  ; saves value to use stosb
+	mov		al, dl				
+	stosb
+	
+  pop		eax					  ; pops for next digit
+	loop	DigitString
+	displayString	[ebp + 12]
+
+	popad
+	pop ebp
+	ret		8
 
 ConvertIntToString ENDP
 
@@ -388,7 +479,16 @@ ConvertIntToString ENDP
 ; Registers Changed: edx
 ;---------------------------------------------
 Farewell PROC
+  push  ebp
+  mov  ebp, esp
+  mov   edx, [ebp + 8]
 
+  call  CrLF
+  call  WriteString
+  call  CrLF
+  
+  pop   ebp
+  ret   4
 Farewell ENDP
 
 
