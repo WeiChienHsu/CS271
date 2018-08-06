@@ -44,33 +44,68 @@ TITLE Program Assignment5 OptionA -  low-level I/O procedures  (Assignment5.asm)
 
 INCLUDE Irvine32.inc
 
-HIGHTEST   EQU  4294967286
 MAX_STRING EQU  15
 INPUT_SIZE EQU  10
 MAX_ASCII  EQU  57
 MIN_ASCII  EQU  48
 
 ;---------------------------------------------
-;
-;
+; Take buffer and put it into EDX and then 
+; writeString to Display the buffer
 ;---------------------------------------------
 DisplayString MACRO stringMessage 
-
-
+  push edx
+  mov  edx, stringMessage
+  call WriteString
+  pop  edx
 ENDM
 
 ;---------------------------------------------
-;
-;
+; Display prompts and then read the user
+; input in a string.
 ;---------------------------------------------
 GetString MACRO stringPrompt, stringAddress 
+  push edx
+  push ecx
 
+  mov edx, stringPrompt ; Display the instruciotn
+  call  WriteString
+
+  mov edx, stringAddress; To stroe the input string
+  mov ecx, MAX_STRING   ; Set a max size
+  call     ReadString   ; read user input and save into input
+
+  pop ecx
+  pop edx
 
 ENDM
 
 
 .data
 
+intro_1           BYTE  "", 0
+intro_2           BYTE  "", 0
+intro_3           BYTE  "", 0
+intro_4           BYTE  "", 0
+intro_EC          BYTE  "", 0
+intro_EC          BYTE  "", 0
+
+prompt            BYTE
+error_message     BYTE
+
+comma_sing        BYTE  "", 0
+goodbye           BYTE  "", 0
+UserInput_message BYTE  "", 0
+Subtotal_message  BYTE  "", 0
+Sum_message       BYTE  "", 0
+Average_message   BYTE  "", 0
+
+UserInput         BYTE
+CurrentNumber     BYTE
+ArraySize         SDWORD  10
+count             DWORD 1
+arr             SDWORD  10(DUP) ?
+Subtotal_number   SDWORD  0
 
 
 .code
