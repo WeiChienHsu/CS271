@@ -93,7 +93,7 @@ intro_EC2         BYTE  "**Extra Credit 3:: make your ReadVal and WriteVal proce
 prompt            BYTE  "Please ENTER an unsigned integer: ", 0
 error_message     BYTE  "The number you ENTERED was not an unsigned integer or it was too large.", 0
 
-comma_sing        BYTE  ",", 0
+comma_sign        BYTE  ", ", 0
 goodbye           BYTE  "Results credited by Wei-Chien Hsu. goodbye, enjoy coding! ", 0
 UserInput_message BYTE  "The number you ENTERED is: ", 0
 Subtotal_message  BYTE  "The running subtotal is: ", 0
@@ -133,7 +133,14 @@ main PROC
   call    readVal
 
 ; Display the value
-
+  push    OFFSET  current           ; ebp + 24
+  push    OFFSET  UserInput_message ; ebp + 20
+  push    OFFSET  comma_sign        ; ebp + 16
+  push    LENGTHOF  arr             ; ebp + 12
+  push    OFFSET    arr             ; ebp + 8
+  call    WriteVal        
+  
+; Display the final results (sum and average)
 
 
 main ENDP
@@ -301,8 +308,50 @@ StoreInput ENDP
 ; Registers Changed: eax, ebx, ecx, edx
 ;------------------------------------------------------------------
 WriteVal PROC
+  push    ebp
+  mov     ebp, esp
+  pushad  
+  ; Check the first call need to
+  mov     ebx, [ebp + 12]
+  cmp     ebx, 10
+  jl      BeginWriteVal
+  DisplayString [ebp + 20]  ; Display the input at first time
+
+BeginWriteVal:
+	mov		  edi, 0  ; Init the edi
+	mov		  ebx, 0	; Init the ebx
+
+	mov		ecx, [ebp + 12]	; Set the counter equal to Array Size
+	mov		esi, [ebp + 8]	; Pass Array into the esi for converting next number
+
+	push	[ebp  + 24]		
+	push	[esi]			
+	call	ConvertIntToString
+
+	
+	cmp		ecx, 1			
+	je		EndWriteVal ; If the number is last digit, no comma needed
+
+	displayString	[ebp + 16]  ; Print comma
+	add		esi,4			          ; Point to the next element
+
+	mov		ecx, [ebp + 12]     ; Update the counter
+	dec		ecx
+
+; For the recursion call
+; Push the same vairables in the same order
+	push	[ebp + 24]	; current
+	push	[ebp + 20]	; UserUserInput_message
+	push	[ebp + 16]	; comma_sing
+	push	ecx			    ; Updated Length of Array
+	push	esi			    ; Updated Array
+	call	WriteVal 
 
 
+EndWriteVal:
+  popad
+  pop   ebp
+  ret   20
 WriteVal ENDP
 
 
@@ -314,6 +363,7 @@ WriteVal ENDP
 ; Registers Changed: eax, ebx, ecx, edx, edi and ebp
 ;----------------------------------------------------------
 DisplaySumAndAvg PROC
+  
 
 DisplaySumAndAvg ENDP
 
