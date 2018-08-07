@@ -97,3 +97,95 @@ quit:
 
 ***
 
+# Recursion
+
+```
+summation	PROC
+	push	ebp
+	mov		ebp,esp
+	
+	mov		eax,[ebp+16]	; eax = x
+	mov		ebx,[ebp+12]	; ebx = y
+	mov		edx,[ebp+8]		; @sum in edx
+	
+	add		[edx],eax		; add current value of x
+	cmp		eax,ebx
+	je		quit			  ; base case: sum = x
+recurse:
+	inc		eax				;recursive case
+	push	eax				; eax = x
+	push	ebx				; ebx = y
+	push	edx				; edx = @sum
+	call	summation
+quit:
+	pop		ebp
+	ret		12
+summation	ENDP
+```
+
+- Using Stack Frame for recursion is essential.
+- Pass all 3 parameters even 2 of them nerver change, since we could use ebp pointer to get the values we need.
+
+***
+
+## Digital Logic Boolean Logic
+
+### Internal (electirc) representation of binary codes
+
+Gates (the building block with defined functionality)
+
+- Made of one or more transistors
+- Only 2 voltages are permitted
+- Low represents binary 0
+- High represents binary 1
+- Can convert Low <-> High using gates
+
+#### Digital Circuits
+- For any set of inputs, gates (NOT, AND, OR) can be combined to produce specified output.
+- NAND, NOR (opposite of AND and OR)
+- XOR (different get 1) <-> XNOR (opposite of XOR)
+
+
+### Simplification
+- Multiple-input gates
+- Equivalent gates
+- Use Boolean Logic to simplify the function before implementing the circuit.
+
+***
+
+## Digital Logicc Circuits
+
+### Half Adder
+
+AB -> Carry
+A XOR B -> Sum
+
+| A | B | Sum | Carry |
+|:-:|:-:|:---:|:-----:|
+| 0 | 0 |  0  |   0   |
+| 0 | 1 |  1  |   0   |
+| 1 | 0 |  1  |   0   |
+| 1 | 1 |  0  |   1   |
+
+
+### Full Adder
+
+AB + (A XOR B) and C -> Carry Out
+(A XOR B) XOR C -> Sum
+
+
+| A | B | Carry In | Sum   | Carry Out |
+|:-:|:-:|:--------:|:-----:|:---------:|
+| 0 | 0 |    0     |   0   |     0     |
+| 0 | 1 |    0     |   1   |     0     |
+| 1 | 0 |    0     |   1   |     0     |
+| 1 | 1 |    0     |   0   |     1     |
+| 0 | 0 |    1     |   1   |     0     |
+| 0 | 1 |    1     |   0   |     1     |
+| 1 | 0 |    1     |   0   |     1     |
+| 1 | 1 |    1     |   1   |     1     |
+
+
+### Ripple Carray Adder
+
+***
