@@ -1035,10 +1035,6 @@ WriteString - Writes a null-terminated string to the screen
 
 ***
 
-
-
-***
-
 ## Required Reading
 
 Textbook: Irvine

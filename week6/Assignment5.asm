@@ -424,7 +424,7 @@ DisplaySumAndAvg ENDP
 ; Description: Convert Userinput into String
 ; Receives: Array, current
 ; Returns: None
-; Registers Changed: eax, ebx, ecx, edi and edp
+; Registers Changed: eax, ebx, ecx, edi and ebp
 ;---------------------------------------------
 ConvertIntToString PROC
 	push	ebp

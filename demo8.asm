@@ -133,9 +133,9 @@ summation	PROC
 	je		quit			;base case: sum = x
 recurse:
 	inc		eax				;recursive case
-	push	eax
-	push	ebx
-	push	edx
+	push	eax				; eax = x
+	push	ebx				; ebx = y
+	push	edx				; edx = @sum
 	call	summation
 quit:
 	pop		ebp

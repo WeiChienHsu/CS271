@@ -27,11 +27,15 @@ test:
 	cmp	eax,ebx
 	jg	quit			;Quit if we've reached last number
 	push	eax			;Save eax, so we can print a space
-	call	WriteDec
-	mov	al,' '
+	call	WriteDec	; print eax
+
+	mov	al,	' '
 	call	WriteChar		;Print space
+
 	pop	eax			;Restore eax
+
 	inc	eax			;next integer
+
 	jmp	test
 quit:
 	call	CrLf
