@@ -229,3 +229,31 @@ IEEE (0 10000010 0101100000000000000) To Decimal
 3. Combining the sign, exponent and significand, the binary number is +1.01011 * 10 ^ 3
 4. Denormalized binary number is +1010.11
 5. Equals to 8 + 2 + 1/2 + 1/4 = 10 3/4 = 10.75
+
+***
+
+## Convert Hexdecimal number to decimal floating nuber
+
+```
+0xC187000 -> 1100 0001 1000 0111 0000 0000 0000 0000
+```
+
+- Transfer the format into sign + Biased exponent + Standard
+
+```
+1  1000 0011 0000 1110 0000....
+```
+
+- So we knew it will be a negative number
+- Exponent is 1000 0011 which is 131.
+- 131 - 127 = 4
+
+```
+1.0000111100000 * 2 ^ 4 = 10000.1111
+```
+
+- Transfer binary into decimal
+
+```
+- 10000.1111 = - (16 + 0.5 + 0.25 + 0.125) = - 16.875
+```
