@@ -27,40 +27,40 @@ out3	BYTE	" is ",0
 .code
 main PROC
 ;Display instructions line 1
-	mov	edx,OFFSET rules1		;set up for call to WriteString
+	mov	  edx, OFFSET rules1		;set up for call to WriteString
 	call	WriteString
 	call	Crlf
 ;Display instructions line 2
-	mov	edx,OFFSET rules2
+	mov	  edx, OFFSET rules2
 	call	WriteString
 	call	Crlf
 	call	Crlf
 
 ;get an integer for a
-	mov	edx,OFFSET prompt1
+	mov	  edx, OFFSET prompt1
 	call	WriteString
 	call	ReadInt
-	mov	a,eax
+	mov	  a, eax
 ;get an integer for b
-	mov	edx,OFFSET prompt2
+	mov	  edx,OFFSET prompt2
 	call	WriteString
 	call	ReadInt
-	mov	b,eax
+	mov	  b,eax
 
 ;initialize accumulator and loop control
-	mov	eax,0		;accumulator = 0
-	mov	ebx,a		;lower limit in ebx
-	mov	ecx,b		;calculate number of times to execute the loop
-	sub	ecx,a
-	inc	ecx		;loop count is b - a + 1
+	mov	  eax,0		;accumulator = 0
+	mov	  ebx,a		;lower limit in ebx
+	mov	  ecx,b		;calculate number of times to execute the loop
+	sub	  ecx,a
+	inc	  ecx		;loop count is b - a + 1
 ;add each integer in [a .. b] to the accumulator
 top:
-	add	eax,ebx	;add current integer to accumulator
-	inc	ebx		;add 1 to current integer
+	add	  eax,ebx	;add current integer to accumulator
+	inc	  ebx		;add 1 to current integer
 	loop	top		; repeat until ecx is 0
 
 ;save the result in sum
-	mov	sum,eax
+	mov	  sum,eax
 
 ;identify and display the result
 	mov	edx,OFFSET out1
