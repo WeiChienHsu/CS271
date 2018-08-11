@@ -35,11 +35,13 @@ WRONG -> [eax], [edx]
 ```
 
 ### Explicit Access to Stack Parameters
-A procedure can explicity access stack paramenters using constant offsets from EBP. (ex [ebp + 8] to get first parameter)
+- A procedure can explicity access stack paramenters using constant offsets from EBP.(ex [ebp + 8] to get first parameter)
 
-EBP is often called the base pointer or frame pointer because it is set to the base address of the stack frame.
+- EBP is often called the base pointer or frame pointer because it is set to the base address of the stack frame.
 
-EBP should not change value during the procedure. Must be restored to its original value when the procedure returns.
+- EBP should not change value during the procedure. 
+
+- Must be restored to its original value when the procedure returns.
 
 
 ## ebp esp eip的几个特性：
@@ -163,25 +165,30 @@ Sum ENDP
 |         |          |
 |:-------:|:--------:|
 |[ESP+4]  |  return@ |
-|[ESP+8]  |   %z     |
+|[ESP+8]  |   @z     |
 |[ESP+12] |  37      |
 |[ESP+16] | 175      |
 
 - After ret 12
 
-Pop out all ESP + 4 - ESP + 16
+Pop out all ESP + 4 (ret) - ESP + 16 (12)
 
 ***
 
 ## Why dont we just use ESP instead of EBP
 
+ESP 永遠指向 Stack Frame 的 Top，利用 mov ebp, esp 讓ebp來處理所有 Address access 操作。
+
 - Pushes and Pops inside the procedure might cause us to lose the base of the stack frame.
 
 ## Trouble Avoidance Tips
 
-Save and Restore registers when they are modified by a procedure. Exception: A Register that returns a function result.
+- Save and Restore registers when they are modified by a procedure. Exception: A Register that returns a function result.
+
+- Do not pass an immediate value or variable contents to a procedure that expect a reference parameter. (Dereferencing it as an address will likely cause a genral-protection fault)
 
 ***
+
 
 # Introduction to Arrays
 

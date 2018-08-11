@@ -12,6 +12,13 @@
 
 The sections of your main
 
+### CALL and RET Instruction
+1. Push the OFFSET of the next instruciton in the calling procedure onto the system stack. (ex. push the current address in the EIP register onto the system stack)
+2. Copies the address of the called procedure into EIP
+3. Executes the called procedrue until RET
+
+1. RET Instruction: Pops the top of Stack into EIP (executino continues in the calling procedure at the instruction after the CALL)
+
 
 ## The System Stack
 
