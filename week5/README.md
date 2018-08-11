@@ -363,3 +363,61 @@ RandomLoop:
   ret  8
 ArrayFill ENDP
 ```
+
+
+## Problem
+
+### Registers Indirect Addressing
+
+```
+Given the following register states, and using Register Indirect Addressing, which of the following lines of code will move the 11th element of the list array (of DWORDs) to the EAX register?
+
+EDX register contans the address of the first element of list.
+ESI register contains the address of the eleventh element of list.
+EBX register contains the value 40,
+```
+
+- mov eax, [esi]
+
+
+### Stack Frame (with not only DWORD 4 bytes)
+
+Suppose that you are given the following program. After the instruction "mov ebp, esp", which of the following is referenced by each of the following?
+
+
+```
+.data
+x   DWORD  153461
+y   WORD   37
+z   WORD   90
+
+
+.code
+main PROC
+   push  x
+   push  y
+   push  z
+   call  someProcedure
+   ...
+   exit
+main ENDP
+
+someProcedure PROC
+   push ebp
+   mov ebp, esp
+   ...
+
+   pop ebp
+   ret 8
+someProcedure ENDP
+END MAIN
+```
+
+
+| Address | Content       |
+|:-------:|:-------------:|
+| ebp     | Original ebp  |
+| ebp + 4 | The return Address from called Procedure  |
+| ebp + 8 | Value of z (2 bytes)   |
+| ebp + 10 | Value of y (2 bytes)   |
+| ebp + 12 | Value of x (4 bytes)    |
