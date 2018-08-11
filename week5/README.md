@@ -335,3 +335,31 @@ more:
 ***
 
 # Displaying Arrays & Using Random Numbers
+
+## ArrayFill Procedure
+
+```
+main
+
+push OFFSET list    ; Address of first element in the list
+push count          ; Number of elements in the list
+call ArrayFill
+
+ArrayFill PROC
+  push ebp
+  mov  ebp, esp     ; Make the Stack Frame
+
+  mov edi, [ebp + 12] ; Put the Address of first element in list into edi
+  mov ecx, [ebp + 8]  ; Put the count variable in to ecx for Looping
+
+RandomLoop:
+  ; Code for generating the Random number and store into EAX
+  mov [edi], eax      ; Deference the address stored in EDI and put the value from EAX
+  add edi, 4          ; Increase the number of edi to point to next element in list
+  loop  RandomLoop
+
+; Pop out the original ebp and return the return address and additional elements
+  pop  ebp
+  ret  8
+ArrayFill ENDP
+```
