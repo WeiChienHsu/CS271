@@ -41,7 +41,7 @@ mov WORD PTR myDouble, 1357h ; saves 1357h
 
 Recall that little endian order is used when storing data in memory.
 
-In memory: 78h | 56h | 34h | 12h
+- In memory: 78h | 56h | 34h | 12h
 
 ```
 mov al, BTYE PTR myDouble       ; AL = 78h
@@ -51,7 +51,9 @@ mov ax, WORD PTR myDouble       ; AL = 5678h
 mov ax, WORD PTR [myDouble + 2] ; AL = 1234h
 ```
 
-- PTR can also be used to combine elements of a smaller data type and move them into a larger operand. The IA-32 CPU will automatically reverse the bytes.
+### PTR Operator (Cont)
+
+PTR can also be used to combine elements of a smaller data type and move them into a larger operand. The IA-32 CPU will automatically reverse the bytes.
 
 ```
 .data
@@ -64,6 +66,8 @@ mov eax, DWORD PTR  myBytes           ; EAX = 78563412h
 ```
 
 ### TYPE Operator
+
+定義的 Variable 佔了多少 Bytes
 
 The TYPE operator returns the size, in bytes, of a single element of a data declaration.
 
@@ -85,6 +89,8 @@ mov eax, TYPE var4 ; 8
 ### LENGTHOF Operator
 - Counts the number of elements in a single data declaration.
 
+定義的 Variables 有多少個 Elements？ 或是 String 內有多少 Characters？
+
 ```
 .data
 byte1 BYTE 10, 20, 30         ; 3
@@ -100,6 +106,8 @@ mov ecx, LENGTHOF list1       ; ecx contains 30
 ### SIZEOF Operator
 - Returns a value that is equivalent to multiplying LENGTHOG by TYPE 
 
+該 Variable 在 Memory 中所佔的總 Bytes數： TYPE * LENGTHOF
+
 ```
 .data
 byte1 BYTE 10, 20, 30         ; 3
@@ -110,6 +118,22 @@ digitStr  BYTE  "1234567", 0  ; 8
 
 .code
 mov ecx, LENGTHOF list1       ; ecx contains 60
+```
+
+### Spanning Multiple Lines
+
+```
+list DWORD    10,20
+              ,30,40
+              ,50,60
+-> LengthOf =  6
+-> SIZEOF = 24
+
+list DWORD    10,20
+     DWORD    30,40
+     DWORD    50,60
+-> LengthOf =  2
+-> SIZEOF = 8
 ```
 
 ***
@@ -139,7 +163,7 @@ ptr     DWORD   list
 mov esi, ptr
 mov eax, [esi]    ; EAX = @ list
 
-; We coudn't deference ptr directly
+; We coudn't deference ptr directly (No valid memory to memory)
 
 ```
 
@@ -172,6 +196,8 @@ L1:
 ```
 
 ***
+
+
 # Multi-Dimensional Arrays String Processing
 
 ## 2 Dimensional Array (Matrix)
