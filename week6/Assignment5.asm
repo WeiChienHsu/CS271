@@ -248,9 +248,13 @@ StringLoop:
 	mov			edx, eax				  ; store the value
   loop    StringLoop
 
+  ; EDX: Converted digit from User Input String
+
   mov     eax, edx
   mov     edx, 0
   div     ebx
+
+  ; Deal with subtotal
 
   DisplayString   [ebp + 28]  ; Print the subtotal message
   push    eax
