@@ -636,6 +636,12 @@ matrix   WORD   50 DUP(10 DUP(?))
 
 What is the hexadecimal address of matrix[7][3] (the 4th element of the 8th row)?
 
+```
+Base address = 0x310 + DWORD(4) = 0x314
+Matrix[7][3] Address = WORD(2) * [(7 * 10) + 3] = 2 * 73 = 146 = 0x092
+
+0x314 + 0x092 = 0x3A6
+```
 - 0x3A6
 
 
