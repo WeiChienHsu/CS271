@@ -421,3 +421,18 @@ END MAIN
 | ebp + 8 | Value of z (2 bytes)   |
 | ebp + 10 | Value of y (2 bytes)   |
 | ebp + 12 | Value of x (4 bytes)    |
+
+
+### List access
+
+Given the following partial data segment, what value would I put in the brackets in list4 4  to access the 7th element of list? (Ignore the .0000 that Canvas may append to your answer).
+
+```
+.MAX = 50
+.data
+list  DWORD    MAX   DUP(0)
+a     DWORD    25
+b     DWORD    15
+```
+
+- 24
