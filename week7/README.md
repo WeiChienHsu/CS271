@@ -78,8 +78,11 @@ Seq MACRO   a, b
 test:
   cmp   eax, ebx
   jg    quit
+  call WriteDec
+  inc   eax
+  jmp   test
 quit:
-
+  exit
 ```
 
 ### Parameters
@@ -90,9 +93,14 @@ quit:
 ### Comparsion Macor and Procedure
 - Macros are very convenient, easu to understand
 - Macros actually execute faster than procedures (No return address, stack manipulation, etc)
-- Macors are invoked by name and does not have a ret statement
+- Macors are invoked by name and does not have a "ret" statement
+
+### Why would you ever us a procedure instead of a MACRO
+
 - If the Macro is called many times, the assembler produces "fat code"
-- Use a macro for short code that is called a few fimes and uses only a few registers
+- Use a macro for short code that is called a few fimes and uses only a few registers.
+
+
 - For both: Save Registers.
 
 ***
