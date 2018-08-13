@@ -131,8 +131,14 @@ quit:
 summation	ENDP
 ```
 
-- Using Stack Frame for recursion is essential.
+- Using Stack Frame for recursion is essential. (Need to back to the original Procedure called)
+- Easy to cause stack overflow.
 - Pass all 3 parameters even 2 of them nerver change, since we could use ebp pointer to get the values we need.
+
+### Sure that
+- The base case is defined.
+- The base case is reachable.
+- The recursive alls approach the base case.
 
 ***
 
