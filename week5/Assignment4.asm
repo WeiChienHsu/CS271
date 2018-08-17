@@ -1,5 +1,4 @@
 TITLE Program Assignment4 -  Random Numbers Sorting  (Assignment4.asm)
-
 ; Author: Wei-Chien Hsu
 ; Last Modified: 07/26/18
 ; OSU email address: hsuweic@oregonstate.edu
