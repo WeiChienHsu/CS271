@@ -16,7 +16,6 @@ TITLE Program Assignment4 -  Random Numbers Sorting  (Assignment4.asm)
 ; 2. The program must validate the user’s request.
 ; 3. min, max, lo, and hi must be declared and used as global constants. 
 ;    Strings may be declared as global variables or constants.
-;
 ; 4. The program must be constructed using procedures. At least the following procedures are required:
 ;    Main / Introduction / GetData {para: request(reference)} / FillArray {para: request(value), array(reference)} /
 ;    SortList {para: array(reference), request(value)} :
@@ -25,7 +24,6 @@ TITLE Program Assignment4 -  Random Numbers Sorting  (Assignment4.asm)
 ;         where i and j are the indexes of elements to be exchanged.
 ;    DisplayMedian {para: array(reference), request(value)}
 ;    DisplayList (only one) {para: array(reference), request(value), title(reference)}
-;
 ; 5. Parameters must be passed by value or by reference on the system stack as noted above. 
 ;
 ; 6. There must be just "one" procedure to display the list. This procedure must be called twice: 
