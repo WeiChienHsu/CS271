@@ -198,8 +198,3 @@ AB + (A XOR B) and C -> Carry Out
 | 0 | 1 |    1     |   0   |     1     |
 | 1 | 0 |    1     |   0   |     1     |
 | 1 | 1 |    1     |   1   |     1     |
-
-
-### Ripple Carray Adder
-
-***
