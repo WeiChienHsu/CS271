@@ -25,10 +25,8 @@ TITLE Program Assignment4 -  Random Numbers Sorting  (Assignment4.asm)
 ;    DisplayMedian {para: array(reference), request(value)}
 ;    DisplayList (only one) {para: array(reference), request(value), title(reference)}
 ; 5. Parameters must be passed by value or by reference on the system stack as noted above. 
-;
 ; 6. There must be just "one" procedure to display the list. This procedure must be called twice: 
 ;    once to display the unsorted list, and once to display the sorted list.
-;
 ; 7. Procedures (except main) should not reference .data segment variables by name. 
 ;    request, array, and titles for the sorted/unsorted lists should be declared in the .data segment, 
 ;    but procedures must use them as parameters. Procedures may use local variables when appropriate. 
