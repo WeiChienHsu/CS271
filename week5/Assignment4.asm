@@ -31,10 +31,8 @@ TITLE Program Assignment4 -  Random Numbers Sorting  (Assignment4.asm)
 ;    request, array, and titles for the sorted/unsorted lists should be declared in the .data segment, 
 ;    but procedures must use them as parameters. Procedures may use local variables when appropriate. 
 ;    Global constants are OK.
-;
 ; 8. The program must use appropriate addressing modes for array elements.
 ; 9. The two lists must be identified when they are displayed (use the title parameter for the display procedure).
-; 
 ; Extra Credit 2 :: Use a recursive sorting algorithm
 ; Extra Credit 3 :: Implement the program using floating-point numbers and the floating-point processor
 ; Extra Credit 5 :: Other: Added alignment procedure for displaying
