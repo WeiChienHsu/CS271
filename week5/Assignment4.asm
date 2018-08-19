@@ -4,7 +4,6 @@ TITLE Program Assignment4 -  Random Numbers Sorting  (Assignment4.asm)
 ; OSU email address: hsuweic@oregonstate.edu
 ; Course number/section: CS 271 Summer 2018
 ; Assignment Number: Programming Assignment #4  Due Date: 08/05/18
-;
 ; Get a user request in the range 10 to 200 and generate request random integers
 ; in range 100 to 999, stroing them in consecutive elements of an array.
 ; Display the list of integers "before sorting, 10 numbers per line."
