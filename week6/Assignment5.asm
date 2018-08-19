@@ -5,13 +5,11 @@ TITLE Program Assignment5 OptionA -  low-level I/O procedures  (Assignment5.asm)
 ; OSU email address: hsuweic@oregonstate.edu
 ; Course number/section: CS 271 Summer 2018
 ; Assignment Number: Programming Assignment #5  Due Date: 08/12/18
-;
 ; Program Definition:
 ; 1. Implement and test "ReadVal" and "WriteVal" procedures for unsigned integers.
 ; 2. Implement macros getString and displayString. 
 ; 3. The macros may use Irvine’s ReadString to get input from the user, 
 ;    and WriteString to display output.
-;
 ; getString: Should display a prompt, then get the user’s keyboard input 
 ;            into a memory location.
 ; displayString: Should the string stored in a specified memory location. 
