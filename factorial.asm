@@ -28,7 +28,7 @@ faLoop:
 		jmp faLoop 
 
 zero:   
-    inc ebx 
+    inc eax 
 		jmp ex 
 ngtve:  
     mov eax, 0 
