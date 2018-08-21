@@ -53,7 +53,7 @@ intro_4   BYTE  "displays the original list, sorted list, and calculates the med
 intor_EC1  BYTE  " Extra Credit :: Use a recursive sorting algorithm - Merge Sort ", 0
 intor_EC2  BYTE  " Extra Credit :: Implement the program using floating-point numbers and the floating-point processor ", 0
 intor_EC3  BYTE  " Extra Credit :: Created procedures to change text color and continue until user quits  ", 0
-
+; Do not Copy and Paste - WeiChien Hsu
 ; User Instruction
 instruct_1    BYTE  " Now, we're going to create a list of random numbers. ", 0
 prompt        BYTE  " Please ENTER the total number of random digits between [10 and 200]: ", 0
@@ -93,7 +93,7 @@ Redo:
   push  OFFSET  prompt    ; [ebp + 12]
   push  OFFSET  userInput ; [ebp + 8]
   call  GetData
-
+; Do not Copy and Paste - WeiChien Hsu
   ; Fill random numbers into the Array
   call  Randomize          ; Procedure provided by Irvine32
   push  RANGE              ; [ebp + 20]

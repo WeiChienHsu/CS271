@@ -35,9 +35,9 @@ TITLE Program Assignment5 OptionA -  low-level I/O procedures  (Assignment5.asm)
 ;
 ; 4. Addresses of prompts, identifying strings, and other memory locations 
 ; should be passed by address to the macros. 
-;
+;; Do not Copy and Paste - WeiChien Hsu
 ; 5. Used registers must be saved and restored by the called procedures and macros.
-;
+;; Do not Copy and Paste - WeiChien Hsu
 ; 6. The stack must be "cleaned up" by the called procedure.
 
 INCLUDE Irvine32.inc
@@ -105,7 +105,7 @@ count             DWORD 1
 arr               SDWORD  10 DUP(?)
 Subtotal_number   SDWORD  0
 
-
+; Do not Copy and Paste - WeiChien Hsu
 .code
 ;-------------------------------------------------------------------
 ; Main Procedure

@@ -45,3 +45,10 @@
 - Lower-Level Programming
 - Reverse Polish Notation
 - IA-32 Floating Point Unit
+
+
+***
+
+Free feel to share the code and send PRs. But if you would like to use those contents in the project, please provide the sources or credits from my repo in your program.
+
+Thanks.

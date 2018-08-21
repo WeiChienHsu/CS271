@@ -142,6 +142,7 @@ WhileLoop:  ; Start the Program
     call  WriteDec
     call  CrLF
 
+; Do not Copy and Paste - WeiChien Hsu
 
 ; Difference: num1 - num2
     mov   eax, firstNum
@@ -255,6 +256,7 @@ WhileLoop:  ; Start the Program
     call  CrLF
     call  CrLF
 
+; Do not Copy and Paste - WeiChien Hsu
 ; While loop break point - Ask user to end or restart
 
   mov   edx, OFFSET whileLoop_1		; Ask for restrating the program

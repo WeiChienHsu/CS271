@@ -11,7 +11,7 @@ TITLE Program Assignment3 -  Composite Numbers Printer  (Assignment3.asm)
 ; The program then calculates and displays all of the composite numbers up to and including the 
 ; nth composite. The results should be displayed 10 composites per line with at least 3 spaces 
 ; between the numbers.
-;
+;; Do not Copy and Paste - WeiChien Hsu
 ; Requirements: 
 ; 1. The programmer’s name and the user’s name must appear in the output.
 ; 2. The counting loop (1 to n) must be implemented using the MASM loop instruction.
@@ -67,7 +67,7 @@ pageCount         DWORD  ?        ; Format the output in sigle page
 threeSpaces       BYTE   "   ", 0 ; Align three digit numbers
 twoSpaces         BYTE   "  ", 0  ; Align two digit numbers
 singleSpace       BYTE   " ", 0   ; Align one digit numbers
-
+; Do not Copy and Paste - WeiChien Hsu
 ; Fareware
 say_goodbye_1     BYTE  "Results credited by Wei-Chien Hsu." , 0
 say_goodbye_2     BYTE  "Enjoy ecoing! Bye!", 0
@@ -140,7 +140,7 @@ OutOfRange: ; Ask user to ENTER another number
   call    WriteString
   call    CrLf
   call    GetUserData          ; Back to GetUserData for asking input 
-
+; Do not Copy and Paste - WeiChien Hsu
 InputValidated: ; User's input is valid, continue to set up variables to display
   mov     numberCount, 0       ; Init number counter for the results
   mov     columns, 0           ; Init columns to 0

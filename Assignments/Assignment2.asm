@@ -12,7 +12,7 @@ TITLE Program Assignment2 -  Fibonacci Number Printer  (Assignment2.asm)
 ; 3. The main procedure must be modularized into at least the following sections:
 ; a. introduction  b. userInstructions  c. getUserData  d. displayFibs  e. farewell
 ; 4. The upper limit should be defined and used as a constant.
-;
+;; Do not Copy and Paste - WeiChien Hsu
 ; Problem Definition:
 ; 1. Display the program title and programmer’s name. 
 ; 2. Ask the user’s name, and greet the user
@@ -144,7 +144,7 @@ GetUserData PROC
   ret
 GetUserData ENDP
 
-
+; Do not Copy and Paste - WeiChien Hsu
 ; DisplayFibs -----------------------------------------------------------------------------------
 ; 
 ; 
